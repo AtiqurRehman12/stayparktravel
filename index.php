@@ -16,7 +16,7 @@
                             Airport Hotel And Parking Deals
                         </div>
                         <div class="col-12 lato font-18">
-                            Free Airport Parking With One Night Hotel Stay
+                            Free Airport Parking With One Night Hotel
                         </div>
                     </div>
                     <div class="">
