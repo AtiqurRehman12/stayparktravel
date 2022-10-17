@@ -1,0 +1,61 @@
+@font-face {
+    font-family: lato;
+    src: url(../fonts/lato/Lato-Regular.ttf);
+}
+@font-face {
+    font-family: latob;
+    src: url(../fonts/lato/Lato-Bold.ttf);
+}
+.lato{
+    font-family: lato;
+}
+.latob{
+    font-family: latob;
+}
+.nav-top-border{
+
+    border-top: 3px solid #2F60A9;
+}
+.navbar{
+    align-items: flex-start;
+}
+.nav-image{
+    height: 62px;
+    width: 200px;
+}
+a{
+    padding: 0px!important;
+}
+.ul-bg{
+    background-color: #2F60A9;
+}
+.sec-nav{
+    text-decoration: none;
+    color: #2F60A9;
+    font-family: lato;
+}
+.form-background{
+    background-image:url(https://www.stayparktravel.com/airports-pictures/161323964115.png);
+    background-size: cover;
+}
+.font-13{
+    font-size: 13px;
+}
+.font-15{
+    font-size: 15px;
+}
+.font-32{
+    font-size: 32px;
+}
+.font-18{
+    font-size: 18px;
+}
+.font-600{
+    font-weight: 600;
+}
+.font-700{
+    font-weight: 700;
+}
+.form-nav-color{
+    color: #15375E;
+}
