@@ -50,6 +50,15 @@ a{
 .font-18{
     font-size: 18px;
 }
+.font-20{
+    font-size: 20px;
+}
+.font-22{
+    font-size: 22px;
+}
+.font-24{
+    font-size: 24px;
+}
 .font-600{
     font-weight: 600;
 }
@@ -58,4 +67,46 @@ a{
 }
 .form-nav-color{
     color: #15375E;
+}
+.border-bottom-blue{
+    border-bottom: 3px solid #15375E;
+}
+.search-absolute{
+    position: absolute;
+    top: 139px;
+    font-size: 21px;
+    left: 24px;
+    color: #15375E;
+}
+.search-hotel{
+    padding-left: 50px!important;
+}
+.user-absolute{
+    position: absolute;
+    font-size: 26px;
+    top: 13px;
+    left: 25px;
+}
+.tenant-input{
+    width: 30px;
+}
+.fa-minus, .fa-plus, .tenant-close{
+    cursor: pointer;
+}
+.tenant-box{
+    position: absolute;
+    width: 90%;
+    display: none;
+}
+.tenant-parent{
+    position: relative;
+}
+.tenant-open{
+    font-family: lato;
+    padding-left: 40px!important;
+}
+.find-button{
+    padding-top: 9px!important;
+    box-sizing: border-box;
+
 }

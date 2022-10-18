@@ -1,3 +1,13 @@
+<?php
+require_once './inc/sqlfunctions.php';
+if(isset($_POST["submit"])){
+    $ser_arr = array(
+        "feature" => $_POST["feature"],
+        "font_awesome" => $_POST["icon"],
+    );
+    insert_func("features", $ser_arr, $connection);
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -32,7 +42,7 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1 class="m-0">Add Hotel</h1>
+                            <h1 class="m-0">Add Feature</h1>
                         </div><!-- /.col -->
                     </div><!-- /.row -->
                 </div><!-- /.container-fluid -->
@@ -40,44 +50,26 @@
             <!-- /.content-header -->
 
             <!-- Main content -->
-            <div class="col-12 my-2 border p-2">
-                <a href="addService.php" class="btn btn-primary">Add Hotel Service</a>
-                <a href="addFeature.php" class="btn btn-primary">Add Hotel Feature</a>
-            </div>
             <div class="col-11 mx-auto border">
                 <form action="" method="post">
                     <div class="card-body">
                         <div class="form-group">
-                            <label for="exampleInputEmail1">Hotel Name</label>
-                            <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+                            <label for="exampleInputEmail1">Feature Name</label>
+                            <input type="text" class="form-control" name="feature" id="exampleInputEmail1" placeholder="lowest rate etc.">
                         </div>
                         <div class="form-group">
-                            <label for="exampleInputPassword1">Location</label>
-                            <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Password">
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputPassword1">Distance From Airport</label>
-                            <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Password">
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputPassword1">Shuttle Hours</label>
-                            <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Password">
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputFile">Hotel Profile Image</label>
-                          <input type="file" class="form-control" name="" id="">
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputFile">More Images</label>
-                            <input type="file" name="" multiple class="form-control" id="">
+                            <label for="exampleInputEmail1">Icon</label>
+                            <input type="text" class="form-control" name="icon" id="exampleInputEmail1">
                         </div>
                     </div>
                     <!-- /.card-body -->
-
-                    <div class="card-footer">
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                    <div class="pb-3">
+                        <button type="submit" name="submit" class="btn btn-primary">Add</button>
                     </div>
                 </form>
+            </div>
+            <div class="col-11 mx-auto mt-2">
+                <a href="addHotel.php" class="btn btn-primary">Go back</a>
             </div>
             <!-- /.content -->
         </div>

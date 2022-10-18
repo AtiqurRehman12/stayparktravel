@@ -63,6 +63,9 @@
               </li>
             </ul>
           </li>
+          <li class="nav-item bg-danger" >
+            <a href="hotelAdmin.php" class="nav-link">Hotel Admin</a>
+          </li>
           <li class="nav-item">
             <a href="pages/widgets.html" class="nav-link">
               <i class="nav-icon fas fa-th"></i>
