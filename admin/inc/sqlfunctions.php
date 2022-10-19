@@ -109,6 +109,10 @@ function cookie_maker($name, $value)
     setcookie($name, $value, time() + (86400 * 30), "/");
 }
 
-// function insert_func_last_id($table, $detail, $connection){
+function new_file_name($name)
+{
+    $temp = explode(".", $name);
+    $newfilename = time() . rand(1,10000) . "." . end($temp);
+    return $newfilename;
 
-// }s
+}

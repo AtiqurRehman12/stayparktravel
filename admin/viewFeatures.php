@@ -1,20 +1,6 @@
 <?php
 require_once './inc/sqlfunctions.php';
-$id = $_GET["id"];
-$service = select_where("services", "id", $id, $connection, 1);
-if(isset($_POST["submit"])){
-
-
-$ser_arr = array(
-    "service" => $_POST["service"],
-    "font_awesome" => $_POST["icon"]
-);
-$arr_con = array(
-    "id" => $id,
-);
-update("services",$ser_arr, $arr_con, $connection);
-header("location:viewServices.php");
-}
+$feature = select_all("features", $connection);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -45,7 +31,7 @@ header("location:viewServices.php");
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1 class="m-0">Update Service</h1>
+                            <h1 class="m-0">Features</h1>
                         </div><!-- /.col -->
                     </div><!-- /.row -->
                 </div><!-- /.container-fluid -->
@@ -54,26 +40,39 @@ header("location:viewServices.php");
 
             <!-- Main content -->
             <div class="col-11 mx-auto border">
-                <form action="" method="post">
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label for="exampleInputEmail1">Service Name</label>
-                            <input type="text" class="form-control" name="service" id="exampleInputEmail1" value="<?php echo $service["service"] ?>">
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputEmail1">Icon</label>
-                            <input type="text" value="<?php echo $service["font_awesome"] ?>" class="form-control" name="icon" id="exampleInputEmail1">
-                        </div>
-                    </div>
-                    <!-- /.card-body -->
-                    <div class="pb-3">
-                        <button type="submit" name="submit" class="btn btn-primary">Update</button>
-                    </div>
-                </form>
+                <table class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Service</th>
+                            <th scope="col">Icon</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        $i = 1;
+                        foreach($feature as $mainFeature){
 
+                        ?>
+                        <tr>
+                            <th><?php echo $i ?></th>
+                            <td><?php echo $mainFeature["feature"] ?></td>
+                            <td><?php echo $mainFeature["font_awesome"] ?></td>
+                            <td>
+                                <a href="deleteFeature.php?id=<?php echo $mainFeature["id"] ?>"><span class="fa fa-trash-alt text-danger"></span></a>
+                                <a href="updateFeature.php?id=<?php echo $mainFeature["id"] ?>"><span class="fa fa-pen-alt text-success" ></span></a>
+                            </td>
+                        </tr>
+                        <?php
+                        $i++;
+                        }
+                        ?>
+                    </tbody>
+                </table>
             </div>
             <div class="col-11 mx-auto mt-2">
-                <a href="addHotel.php" class="btn btn-primary">Go back</a>
+                <a href="addFeature.php" class="btn btn-primary">Go back</a>
             </div>
             <!-- /.content -->
         </div>

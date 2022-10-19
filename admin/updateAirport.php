@@ -1,11 +1,20 @@
 <?php
 require_once './inc/sqlfunctions.php';
+if(isset($_GET["id"])){
+    $id = $_GET["id"];
+}
+$airport = select_where("airports", "id", $id, $connection, 1);
 if(isset($_POST["submit"])){
-    $airport_arr = array(
+    $air_arr = array(
         "airport" => $_POST["airport"],
     );
-    insert_func("airports",$airport_arr, $connection);
+    $key = array(
+        "id" => $id,
+    );
+    update("airports",$air_arr, $key, $connection);
+    header("location:viewAirports.php");
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -36,7 +45,7 @@ if(isset($_POST["submit"])){
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1 class="m-0">Add Airport</h1>
+                            <h1 class="m-0">Update Airport</h1>
                         </div><!-- /.col -->
                     </div><!-- /.row -->
                 </div><!-- /.container-fluid -->
@@ -44,20 +53,20 @@ if(isset($_POST["submit"])){
             <!-- /.content-header -->
 
             <!-- Main content -->
-            <div class="col-11 mx-auto border p-3">
+            <div class="col-11 mx-auto border">
                 <form action="" method="post">
                     <div class="card-body">
                         <div class="form-group">
                             <label for="exampleInputEmail1">Airport</label>
-                            <input type="text" name="airport" class="form-control" id="exampleInputEmail1" placeholder="">
+                            <input type="text" value="<?php echo $airport["airport"] ?>" name="airport" class="form-control" id="exampleInputEmail1" placeholder="">
                         </div>
                     </div>
                     <!-- /.card-body -->
                     <div class="pb-3">
-                        <button type="submit" name="submit" class="btn btn-primary">Add</button>
+                        <button type="submit" name="submit" class="btn btn-primary">Update</button>
                     </div>
                 </form>
-                <a href="./viewAirports.php" class="btn btn-primary">View Airports</a>
+                <a href="./viewAirports.php" class="btn btn-primary">Back</a>
             </div>
             <!-- /.content -->
         </div>

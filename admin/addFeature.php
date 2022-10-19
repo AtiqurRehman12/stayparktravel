@@ -70,6 +70,7 @@ if(isset($_POST["submit"])){
             </div>
             <div class="col-11 mx-auto mt-2">
                 <a href="addHotel.php" class="btn btn-primary">Go back</a>
+                <a href="viewFeatures.php" class="btn btn-primary">View Features</a>
             </div>
             <!-- /.content -->
         </div>

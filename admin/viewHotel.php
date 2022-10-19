@@ -1,6 +1,6 @@
 <?php
 require_once './inc/sqlfunctions.php';
-$services = select_all("services", $connection);
+$hotels = select_all("hotels", $connection);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -31,7 +31,7 @@ $services = select_all("services", $connection);
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1 class="m-0">Services</h1>
+                            <h1 class="m-0">Hotels</h1>
                         </div><!-- /.col -->
                     </div><!-- /.row -->
                 </div><!-- /.container-fluid -->
@@ -44,24 +44,29 @@ $services = select_all("services", $connection);
                     <thead class="thead-dark">
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">Service</th>
-                            <th scope="col">Icon</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Location</th>
+                            <th scope="col">Airport</th>
+                            <th scope="col">Image</th>
                             <th scope="col">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
                         $i = 1;
-                        foreach($services as $mainServices){
+                        foreach($hotels as $mainhotels){
 
                         ?>
                         <tr>
                             <th><?php echo $i ?></th>
-                            <td><?php echo $mainServices["service"] ?></td>
-                            <td><?php echo $mainServices["font_awesome"] ?></td>
+                            <td><?php echo $mainhotels["name"] ?></td>
+                            <td><?php echo $mainhotels["location"] ?></td>
+                            <td><?php echo $mainhotels["airport"] ?></td>
+                            <td><img src="<?php echo './hotel profile images/'. $mainhotels["image"] ?>" style="width: 100px;" alt=""></td>
+
                             <td>
-                                <a href="deleteService.php?id=<?php echo $mainServices["id"] ?>"><span class="fa fa-trash-alt text-danger"></span></a>
-                                <a href="updateService.php?id=<?php echo $mainServices["id"] ?>"><span class="fa fa-pen-alt text-success" ></span></a>
+                                <a href="deleteFeature.php?id=<?php echo $mainhotels["id"] ?>"><span class="fa fa-trash-alt text-danger"></span></a>
+                                <a href="updateFeature.php?id=<?php echo $mainhotels["id"] ?>"><span class="fa fa-pen-alt text-success" ></span></a>
                             </td>
                         </tr>
                         <?php
@@ -72,7 +77,7 @@ $services = select_all("services", $connection);
                 </table>
             </div>
             <div class="col-11 mx-auto mt-2">
-                <a href="addService.php" class="btn btn-primary">Go back</a>
+                <a href="addFeature.php" class="btn btn-primary">Go back</a>
             </div>
             <!-- /.content -->
         </div>

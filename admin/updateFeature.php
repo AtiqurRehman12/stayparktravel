@@ -1,17 +1,26 @@
 <?php
 require_once './inc/sqlfunctions.php';
+$id = $_GET["id"];
+$feature = select_where("features", "id", $id, $connection, 1);
 if(isset($_POST["submit"])){
-    $airport_arr = array(
-        "airport" => $_POST["airport"],
-    );
-    insert_func("airports",$airport_arr, $connection);
+
+
+$fea_arr = array(
+    "feature" => $_POST["feature"],
+    "font_awesome" => $_POST["icon"]
+);
+$fea_con = array(
+    "id" => $id,
+);
+update("features",$fea_arr, $fea_con, $connection);
+header("location:viewFeatures.php");
 }
 ?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <?php require_once './inc/header.php'?>
+    <?php require_once './inc/header.php' ?>
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -36,7 +45,7 @@ if(isset($_POST["submit"])){
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1 class="m-0">Add Airport</h1>
+                            <h1 class="m-0">Update Feature</h1>
                         </div><!-- /.col -->
                     </div><!-- /.row -->
                 </div><!-- /.container-fluid -->
@@ -44,20 +53,27 @@ if(isset($_POST["submit"])){
             <!-- /.content-header -->
 
             <!-- Main content -->
-            <div class="col-11 mx-auto border p-3">
+            <div class="col-11 mx-auto border">
                 <form action="" method="post">
                     <div class="card-body">
                         <div class="form-group">
-                            <label for="exampleInputEmail1">Airport</label>
-                            <input type="text" name="airport" class="form-control" id="exampleInputEmail1" placeholder="">
+                            <label for="exampleInputEmail1">Feature Name</label>
+                            <input type="text" class="form-control" name="feature" id="exampleInputEmail1" value="<?php echo $feature["feature"] ?>">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Icon</label>
+                            <input type="text" value="<?php echo $feature["font_awesome"] ?>" class="form-control" name="icon" id="exampleInputEmail1">
                         </div>
                     </div>
                     <!-- /.card-body -->
                     <div class="pb-3">
-                        <button type="submit" name="submit" class="btn btn-primary">Add</button>
+                        <button type="submit" name="submit" class="btn btn-primary">Update</button>
                     </div>
                 </form>
-                <a href="./viewAirports.php" class="btn btn-primary">View Airports</a>
+
+            </div>
+            <div class="col-11 mx-auto mt-2">
+                <a href="addHotel.php" class="btn btn-primary">Go back</a>
             </div>
             <!-- /.content -->
         </div>
