@@ -58,6 +58,14 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-4">
+                        <div class="card" style="width: 18rem;">
+                            <a href="viewHotels.php" class="card-text h4"><img class="card-img-top" src="./adminimages/three-stars-hotel-text-d-concept-white-61086205.jpg" alt="Card image cap"></a>
+                            <div class="card-body text-center">
+                                <a class="card-text h4" href="viewHotels.php">View Hotels</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- /.content -->

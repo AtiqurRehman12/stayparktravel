@@ -35,7 +35,7 @@ if(isset($_POST["submit"])){
         mysqli_query($connection, "INSERT INTO hotel_services(`service`,  `hotel_id`)VALUES('$hotel_service', '$hotel_id')");
     }
     foreach($_POST["features"] as $fea_key => $fea_val){
-        $hotel_service = $_POST["services"][$fea_key];
+        $hotel_service = $_POST["feature"][$fea_key];
         mysqli_query($connection, "INSERT INTO hotel_features(`feature`,  `hotel_id`)VALUES('$hotel_service', '$hotel_id')");
     }
     foreach(array_combine($_POST["price"], $_POST["accomodation"]) as $rate_key => $rate_val){
