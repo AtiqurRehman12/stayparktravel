@@ -3,7 +3,7 @@ require_once './inc/sqlfunctions.php';
 $services = select_all("services", $connection);
 $features = select_all("features", $connection);
 $airports = select_all("airports", $connection);
-if(isset($_POST["submit"])){
+if (isset($_POST["submit"])) {
     $image = $_FILES["image"]["name"];
     $newImage = new_file_name($image);
     $tmp_image = $_FILES["image"]["tmp_name"];
@@ -17,33 +17,34 @@ if(isset($_POST["submit"])){
         "parking" => $_POST["parking"],
         "airport" => $_POST["airport"],
     );
-    if(move_uploaded_file($tmp_image, './hotel profile images/'.$newImage)){
+    if (move_uploaded_file($tmp_image, './hotel profile images/' . $newImage)) {
         insert_func("hotels", $hotel_arr, $connection);
     }
     $hotel_id = mysqli_insert_id($connection);
-    foreach($_FILES["more-img"]["tmp_name"] as $key => $value){
+    foreach ($_FILES["more-img"]["tmp_name"] as $key => $value) {
         $temp_image = $_FILES["more-img"]["tmp_name"][$key];
         $detailImage = $_FILES["more-img"]["name"][$key];
         $newDetailImage = new_file_name($detailImage);
 
-        if(move_uploaded_file($temp_image, './hotel detail images/'.$newDetailImage)){
+        if (move_uploaded_file($temp_image, './hotel detail images/' . $newDetailImage)) {
             mysqli_query($connection, "INSERT INTO hotel_images(images, hotel_id)VALUES('$newDetailImage', '$hotel_id')");
         }
     }
-    foreach($_POST["services"] as $ser_key => $ser_val){
+    foreach ($_POST["services"] as $ser_key => $ser_val) {
         $hotel_service = $_POST["services"][$ser_key];
         mysqli_query($connection, "INSERT INTO hotel_services(`service`,  `hotel_id`)VALUES('$hotel_service', '$hotel_id')");
     }
-    foreach($_POST["features"] as $fea_key => $fea_val){
-        $hotel_service = $_POST["feature"][$fea_key];
+    foreach ($_POST["features"] as $fea_key => $fea_val) {
+        $hotel_service = $_POST["features"][$fea_key];
         mysqli_query($connection, "INSERT INTO hotel_features(`feature`,  `hotel_id`)VALUES('$hotel_service', '$hotel_id')");
     }
-    foreach(array_combine($_POST["price"], $_POST["accomodation"]) as $rate_key => $rate_val){
-        $price = $rate_key;
-        $accom = $rate_val;
-        mysqli_query($connection, "INSERT INTO hotel_rates(`price` , `accomodation`, `hotel_id`)VALUES('$price', '$accom', '$hotel_id')");
+    foreach (array_combine($_POST["price"], $_POST["accomodation"]) as $rate_key => $rate_val) {
+        if ($rate_key != "" &&  $rate_val != "") {
+            $price = $rate_key;
+            $accom = $rate_val;
+            mysqli_query($connection, "INSERT INTO hotel_rates(`price` , `accomodation`, `hotel_id`)VALUES('$price', '$accom', '$hotel_id')");
+        }
     }
-    
 }
 ?>
 <!DOCTYPE html>
@@ -52,10 +53,6 @@ if(isset($_POST["submit"])){
 <head>
     <?php require_once './inc/header.php' ?>
     <style>
-        .card img {
-            height: 200px !important;
-        }
-
         .pointer {
             cursor: pointer;
         }
@@ -180,6 +177,17 @@ if(isset($_POST["submit"])){
                             <span class="fa fa-plus pointer add-acc float-right"></span>
                             <div class="accom-box border p-2">
                                 <div class="inner-accom">
+                                    <div>
+                                        <span class="fa fa-minus del-acc pointer float-right"></span>
+                                        <label for="">Price</label>
+                                        <input type="text" name="price[]" class="form-control" id="">
+                                        <label for="">Accomodation</label>
+                                        <input type="text" name="accomodation[]" class="form-control" id="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="hidden-accom-box d-none">
+                                <div>
                                     <span class="fa fa-minus del-acc pointer float-right"></span>
                                     <label for="">Price</label>
                                     <input type="text" name="price[]" class="form-control" id="">
@@ -195,11 +203,11 @@ if(isset($_POST["submit"])){
                             <label for="">Airport</label>
                             <select name="airport" id="" class="form-control">
                                 <?php
-                                foreach($airports as $mainAirports){
+                                foreach ($airports as $mainAirports) {
                                 ?>
-                                <option value="<?php echo $mainAirports["airport"] ?>"><?php echo $mainAirports["airport"] ?></option>
+                                    <option value="<?php echo $mainAirports["airport"] ?>"><?php echo $mainAirports["airport"] ?></option>
                                 <?php
-                                }?>
+                                } ?>
                             </select>
                         </div>
                     </div>
@@ -229,7 +237,7 @@ if(isset($_POST["submit"])){
         $(document).ready(function() {
             $(".accom-box").find(".del-acc").hide();
             $(".add-acc").click(function() {
-                var accom = $(".inner-accom").clone(true, true);
+                var accom = $(".hidden-accom-box div").clone(true, true);
                 $(".added-acc").append(accom);
                 $(".added-acc").find(".del-acc").show();
             })

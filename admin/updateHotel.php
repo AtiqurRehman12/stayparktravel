@@ -10,15 +10,15 @@ if (isset($_GET["id"])) {
     $hotel_features = select_where("hotel_features", "hotel_id", $hotel_id, $connection, 2);
     $rates = select_all("hotel_rates", $connection);
 }
-if(isset($_POST["submit"])){
+if (isset($_POST["submit"])) {
     $image = $_FILES["image"]["name"];
-    if($image == ""){
-        $image = $hotels["image"];
-    }else{
-        unlink('./hotel profile images/'.$hotels["image"]);
+    if (!$image) {
+        $newImage = $hotels["image"];
+    } else {
+        unlink('./hotel profile images/' . $hotels["image"]);
         $tmp_image = $_FILES["image"]["tmp_name"];
+        $newImage = new_file_name($image);
     }
-    $newImage = new_file_name($image);  
     $hotel_arr = array(
         "name" => $_POST["name"],
         "location" => $_POST["location"],
@@ -32,27 +32,28 @@ if(isset($_POST["submit"])){
     $hotel_con = array(
         "id" => $hotel_id,
     );
-    if($image == ""){
+    if (!$image) {
         update("hotels", $hotel_arr, $hotel_con, $connection);
-    }
-    else{
-        if(move_uploaded_file($tmp_image, './hotel profile images/'. $newImage)){
+    } else {
+        if (move_uploaded_file($tmp_image, './hotel profile images/' . $newImage)) {
             update("hotels", $hotel_arr, $hotel_con, $connection);
         }
     }
     mysqli_query($connection, "DELETE FROM `hotel_services` WHERE `hotel_id` = $hotel_id");
-    foreach($_POST["services"] as $update_services){
+    foreach ($_POST["services"] as $update_services) {
         mysqli_query($connection, "INSERT INTO `hotel_services`(`service`, `hotel_id`)VALUES('$update_services', '$hotel_id')");
     }
     mysqli_query($connection, "DELETE FROM `hotel_features` WHERE `hotel_id` = $hotel_id");
-    foreach($_POST["features"] as $update_features){
+    foreach ($_POST["features"] as $update_features) {
         mysqli_query($connection, "INSERT INTO `hotel_features`(`feature`, `hotel_id`)VALUES('$update_features', '$hotel_id')");
     }
     mysqli_query($connection, "DELETE FROM `hotel_rates` WHERE `hotel_id` = $hotel_id");
-    foreach(array_combine($_POST["price"], $_POST["accomodation"]) as $rate_key => $rate_val){
+    foreach (array_combine($_POST["price"], $_POST["accomodation"]) as $rate_key => $rate_val) {
+        if($rate_key != "" && $rate_val !=""){
         $price = $rate_key;
         $accom = $rate_val;
         mysqli_query($connection, "INSERT INTO hotel_rates(`price` , `accomodation`, `hotel_id`)VALUES('$price', '$accom', '$hotel_id')");
+        }
     }
     header("location:viewHotels.php");
 }
@@ -91,7 +92,7 @@ if(isset($_POST["submit"])){
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1 class="m-0">Add Hotel</h1>
+                            <h1 class="m-0">Update Hotel</h1>
                         </div><!-- /.col -->
                     </div><!-- /.row -->
                 </div><!-- /.container-fluid -->
@@ -134,12 +135,13 @@ if(isset($_POST["submit"])){
                                 foreach ($services as $mainServices) {
                                 ?>
                                     <div class="col-3">
-                                        <input type="checkbox" name="services[]" <?php if($hotel_services != ""){ foreach($hotel_services as $main_hotel_services) {
-                                                                                        if ($main_hotel_services["service"] == $mainServices["service"]) {
-                                                                                            echo "checked";
+                                        <input type="checkbox" name="services[]" <?php if ($hotel_services != "") {
+                                                                                        foreach ($hotel_services as $main_hotel_services) {
+                                                                                            if ($main_hotel_services["service"] == $mainServices["service"]) {
+                                                                                                echo "checked";
+                                                                                            }
                                                                                         }
-                                                                                    }
-                                                                                 }?> value="<?php echo $mainServices["service"] ?>" name="" id="<?php echo $mainServices["service"] ?>">
+                                                                                    } ?> value="<?php echo $mainServices["service"] ?>" name="" id="<?php echo $mainServices["service"] ?>">
                                         <label class="pointer" for="<?php echo $mainServices["service"] ?>"><?php echo $mainServices["service"] ?></label>
                                     </div>
                                 <?php
@@ -154,11 +156,13 @@ if(isset($_POST["submit"])){
                                 foreach ($features as $mainFeatures) {
                                 ?>
                                     <div class="col-3">
-                                        <input type="checkbox" name="features[]" <?php if($hotel_features != ""){ foreach ($hotel_features as $main_hotel_features) {
-                                                                                        if ($main_hotel_features["feature"] == $mainFeatures["feature"]) {
-                                                                                            echo "checked";
+                                        <input type="checkbox" name="features[]" <?php if ($hotel_features != "") {
+                                                                                        foreach ($hotel_features as $main_hotel_features) {
+                                                                                            if ($main_hotel_features["feature"] == $mainFeatures["feature"]) {
+                                                                                                echo "checked";
+                                                                                            }
                                                                                         }
-                                                                                    }} ?> value="<?php echo $mainFeatures["feature"] ?>" id="<?php echo $mainFeatures["feature"] ?>">
+                                                                                    } ?> value="<?php echo $mainFeatures["feature"] ?>" id="<?php echo $mainFeatures["feature"] ?>">
                                         <label class="pointer" for="<?php echo $mainFeatures["feature"] ?>"><?php echo $mainFeatures["feature"] ?></label>
                                     </div>
                                 <?php
@@ -198,26 +202,28 @@ if(isset($_POST["submit"])){
                             <label for="">Rates</label>
                             <span class="fa fa-plus pointer add-acc float-right"></span>
                             <div class="accom-box border p-2">
-                                <?php foreach($rates as $mainRates){
+                                <?php foreach ($rates as $mainRates) {
 
                                 ?>
-                                <div class="inner-accom">
-                                    <span class="fa fa-minus del-acc pointer float-right"></span>
-                                    <label for="">Price</label>
-                                    <input type="text" value="<?php echo $mainRates["price"] ?>" name="price[]" class="form-control" id="">
-                                    <label for="">Accomodation</label>
-                                    <input type="text" value="<?php echo $mainRates["accomodation"] ?>" name="accomodation[]" class="form-control" id="">
-                                </div>
+                                    <div class="inner-accom">
+                                        <span class="fa fa-minus del-acc pointer float-right"></span>
+                                        <label for="">Price</label>
+                                        <input type="text" value="<?php echo $mainRates["price"] ?>" name="price[]" class="form-control" id="">
+                                        <label for="">Accomodation</label>
+                                        <input type="text" value="<?php echo $mainRates["accomodation"] ?>" name="accomodation[]" class="form-control" id="">
+                                    </div>
                                 <?php
-                                }?>
+                                } ?>
                             </div>
                             <div class="hidden-accom d-none">
                                 <div class="hidden-accom-box">
-                                    <span class="fa fa-minus del-acc pointer float-right"></span>
-                                    <label for="">Price</label>
-                                    <input type="text" name="price[]" class="form-control" id="">
-                                    <label for="">Accomodation</label>
-                                    <input type="text" name="accomodation[]" class="form-control" id="">
+                                    <div>
+                                        <span class="fa fa-minus del-acc pointer float-right"></span>
+                                        <label for="">Price</label>
+                                        <input type="text" name="price[]" class="form-control" id="">
+                                        <label for="">Accomodation</label>
+                                        <input type="text" name="accomodation[]" class="form-control" id="">
+                                    </div>
                                 </div>
                             </div>
                             <div class="added-acc p-2">
@@ -264,7 +270,7 @@ if(isset($_POST["submit"])){
         $(document).ready(function() {
             $(".accom-box").find(".del-acc").hide();
             $(".add-acc").click(function() {
-                var accom = $(".hidden-accom-box").clone(true, true);
+                var accom = $(".hidden-accom-box div").clone(true, true);
                 $(".added-acc").append(accom);
                 $(".added-acc").find(".del-acc").show();
             })

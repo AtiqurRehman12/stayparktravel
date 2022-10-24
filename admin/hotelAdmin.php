@@ -66,6 +66,22 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-4">
+                        <div class="card" style="width: 18rem;">
+                            <a href="addService.php" class="card-text text-center h4"><img class="card-img-top w-50" src="./adminimages/download.png" alt="Card image cap"></a>
+                            <div class="card-body text-center">
+                                <a class="card-text h4" href="addService.php">Add Services</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="card" style="width: 18rem;">
+                            <a href="addFeature.php" class="card-text text-center h4"><img class="card-img-top w-50" src="./adminimages/2620383.png" alt="Card image cap"></a>
+                            <div class="card-body text-center">
+                                <a class="card-text h4" href="addFeature.php">Add Feature</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- /.content -->

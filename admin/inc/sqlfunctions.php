@@ -24,6 +24,12 @@ function delete_func($table, $del_id, $connection)
         die();
     }
 }
+function delete_where_fun($table, $del_col, $del_id, $connection){
+    $del_where_que = "DELETE FROM $table WHERE $del_col = $del_id";
+    if (!mysqli_query($connection, $del_where_que)) {
+        die();
+    }
+}
 
 
 
@@ -114,5 +120,4 @@ function new_file_name($name)
     $temp = explode(".", $name);
     $newfilename = time() . rand(1,10000) . "." . end($temp);
     return $newfilename;
-
 }

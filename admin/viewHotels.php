@@ -54,6 +54,10 @@ $hotels = select_all("hotels", $connection);
                     <tbody>
                         <?php
                         $i = 1;
+                        if($hotels == ""){
+                            echo "<h4>NO DATA</4>";
+                        }
+                        else{
                         foreach($hotels as $mainhotels){
 
                         ?>
@@ -72,6 +76,7 @@ $hotels = select_all("hotels", $connection);
                         <?php
                         $i++;
                         }
+                    }
                         ?>
                     </tbody>
                 </table>

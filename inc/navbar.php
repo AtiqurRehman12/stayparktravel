@@ -1,4 +1,4 @@
-<section class="nav-top-border navbar-section pb-2">
+<section class="nav-top-border bg-white navbar-section pb-2">
         <div class="col-11 mx-auto">
             <nav class="navbar navbar-expand-lg navbar-light p-0">
                 <div class="py-2"><a class="navbar-brand col-3" href="#"><img src="https://www.stayparktravel.com/images/stayparktravel.com.svg" class="nav-image" alt=""></a></div>

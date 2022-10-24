@@ -1,9 +1,14 @@
+<?php
+if (isset($_POST["submit"])) {
+    $airport = $_POST["airport"];
+    header("location:searchHotel.php?airport=$airport");
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <?php require_once './inc/header.php' ?>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
 </head>
 
 <body>
@@ -11,7 +16,7 @@
     <div class="col-12 form-background pt-3 pb-5">
         <div class="col-11 mx-auto p-0">
             <div class="col-10 bg-light rounded pt-2 pb-4">
-                <form action="" method="post">
+                <form action="" autocomplete="off" method="post">
                     <div class="pb-3 border-bottom">
                         <div class="col-12 font-32 font-600 lato">
                             Airport Hotel And Parking Deals
@@ -48,61 +53,65 @@
                             <li class="nav-item">Room at the start and end of the trip</li>
                         </ul>
                         <div class="mt-4">
-                            <input type="text" class="form-control search-hotel lato rounded-0 p-4" placeholder="Enter Airport or Cruise Port" name="" id="">
-                            <span class="fa fa-search search-absolute"></span>
-                        </div>
-                        <div class="col-12 mt-3">
-                            <div class="row">
-                                <div class="col-6 p-0">
-                                    <input type="text" name="daterange" class="form-control pl-5 rounded-0 datepicker p-4" value="" />
-
-                                </div>
-                                <div class="col-4 tenant-parent">
-                                    <span class="fa fa-user user-absolute form-nav-color"></span>
-                                    <input type="text" name="" value="1 adult, 0 children, 1 room" class="form-control rounded-0 p-4 tenant-open bg-white" readonly id="">
-                                    <div class="col-12 border p-0 tenant-box">
-                                        <div class="col-12 mt-2">
-                                            <div class="row border-bottom pb-2">
-                                                <div class="col-8 lato">Adult(s)</div>
-                                                <div class="col-4 p-0">
-                                                    <span class="fa fa-minus"></span>
-                                                    <input type="text" class="tenant-input adults" value="1" name="" id="">
-                                                    <span class="fa fa-plus"></span>
-                                                </div>
-                                            </div>
-                                            <div class="row mt-2 border-bottom pb-2">
-                                                <div class="col-8 lato">Child(ren)</div>
-                                                <div class="col-4 p-0">
-                                                    <span class="fa fa-minus"></span>
-                                                    <input type="text" class="tenant-input children" value="0" name="" id="">
-                                                    <span class="fa fa-plus"></span>
-                                                </div>
-                                            </div>
-                                            <div class="row mt-2">
-                                                <div class="col-8 lato">Room(s)</div>
-                                                <div class="col-4 p-0">
-                                                    <span class="fa fa-minus"></span>
-                                                    <input type="text" class="tenant-input room" value="1" name="" id="">
-                                                    <span class="fa fa-plus"></span>
-                                                </div>
-                                            </div>
-                                            <div class="btn btn-block btn-success py-1 mt-2 tenant-close">Done</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-2">
-                                    <a href="#" class="btn lato btn-success find-button w-100 h-100 font-20">Find Hotel</a>
+                            <div class="container p-0">
+                                <!--Make sure the form has the autocomplete function switched off:-->
+                                <div class="autocomplete w-100 pr-3">
+                                    <input id="myInput" class="form-control border typeahead search-hotel lato rounded-0 p-4" type="text" name="airport" placeholder="Enter Airport or Cruise Port">
                                 </div>
                             </div>
                         </div>
+                        <span class="fa fa-search search-absolute"></span>
                     </div>
-                </form>
+                    <div class="col-12 mt-3">
+                        <div class="row">
+                            <div class="col-6 p-0">
+                                <input type="text" name="daterange" class="form-control pl-5 rounded-0 datepicker p-4" value="" />
+
+                            </div>
+                            <div class="col-4 tenant-parent">
+                                <span class="fa fa-user user-absolute form-nav-color"></span>
+                                <input type="text" name="" value="1 adult, 0 children, 1 room" class="form-control rounded-0 p-4 tenant-open bg-white" readonly id="">
+                                <div class="col-12 border bg-white position-absolute p-0 tenant-box">
+                                    <div class="col-12 mt-2">
+                                        <div class="row border-bottom pb-2">
+                                            <div class="col-8 lato">Adult(s)</div>
+                                            <div class="col-4 p-0">
+                                                <span class="fa fa-minus"></span>
+                                                <input type="text" class="tenant-input adults" value="1" name="" id="">
+                                                <span class="fa fa-plus"></span>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-2 border-bottom pb-2">
+                                            <div class="col-8 lato">Child(ren)</div>
+                                            <div class="col-4 p-0">
+                                                <span class="fa fa-minus"></span>
+                                                <input type="text" class="tenant-input children" value="0" name="" id="">
+                                                <span class="fa fa-plus"></span>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-2">
+                                            <div class="col-8 lato">Room(s)</div>
+                                            <div class="col-4 p-0">
+                                                <span class="fa fa-minus"></span>
+                                                <input type="text" class="tenant-input room" value="1" name="" id="">
+                                                <span class="fa fa-plus"></span>
+                                            </div>
+                                        </div>
+                                        <div class="btn btn-block btn-success py-1 mt-2 tenant-close">Done</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <button type="submit" name="submit" class="btn lato btn-success find-button w-100 h-100 font-20">Find Hotel</button>
+                            </div>
+                        </div>
+                    </div>
             </div>
+            </form>
         </div>
     </div>
+    </div>
     <?php require_once './inc/footer.php' ?>
-    <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script>
         $(document).ready(function(e) {
             e.preventdefault
@@ -119,17 +128,17 @@
             })
             $(".fa-plus").click(function() {
                 var plusval = $(this).prev().val();
-                    $(this).prev().val( parseInt(plusval) + 1);
+                $(this).prev().val(parseInt(plusval) + 1);
             })
-            $(".tenant-open").click(function(){
+            $(".tenant-open").click(function() {
                 $(".tenant-box").slideToggle(500);
             })
-            $(".tenant-close").click(function(){
+            $(".tenant-close").click(function() {
                 $(".tenant-box").slideUp(500);
                 var adults = $(".adults").val();
                 var child = $(".children").val();
-                var room = $ (".room").val();
-                $(".tenant-open").val(adults + " Adults, " + child + " Children ," + room + " Rooms " )
+                var room = $(".room").val();
+                $(".tenant-open").val(adults + " Adults, " + child + " Children ," + room + " Rooms ")
             })
         });
     </script>
