@@ -23,7 +23,11 @@ if (isset($_GET["airport"])) {
 
 <body class="bg-light">
     <?php require_once './inc/navbar.php' ?>
-    <div class="col-11 mx-auto">
+    <div class="col-11 mx-auto lato font-20 font-700 hotel-count border-bottom p-2">
+        
+        <span>Showing <span class="count"></span> hotels near <?php echo $airport?></span>
+    </div>
+    <div class="col-11 mx-auto mt-2">
         <div class="row">
             <div class="col-3 p-0 pt-2">
                 <div class="col-12 pr-0">
@@ -33,7 +37,7 @@ if (isset($_GET["airport"])) {
                     Search by property name
                 </div>
                 <div class="col-12 mb-3">
-                    <input type="text" class="form-control rounded-0" placeholder="Property Name" name="" id="">
+                    <input type="text" class="form-control rounded-0" placeholder="Property Name" name="" id="property-search">
                 </div>
                 <div class="col-12">
                     <div class="lato font-20 mb-3">Filter properties by</div>
@@ -82,6 +86,25 @@ if (isset($_GET["airport"])) {
                             </div>
                         </div>
                     </div>
+                    <div class="">
+                        <div class="lato font-20 mb-2">Price per night</div>
+                        <div>
+                            <input type="radio" name="price" id="all-prices">
+                            <label for="all-prices">All</label>
+                        </div>
+                        <div>
+                            <input type="radio" name="price" id="low-price">
+                            <label for="low-price" class="lato">Less than $90</label>
+                        </div>
+                        <div>
+                            <input type="radio" name="price" id="mid-price">
+                            <label for="mid-price" class="lato">$91 to $110</label>
+                        </div>
+                        <div>
+                            <input type="radio" name="price" id="high-price">
+                            <label for="high-price" class="lato">$110 to $199</label>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="col-9 main-container main-zoom">
@@ -91,7 +114,7 @@ if (isset($_GET["airport"])) {
                         $hotel_id = $mainHotels["id"];
                         $rate = select_where("hotel_rates", "hotel_id", $hotel_id, $connection, 1);
                 ?>
-                        <div class="col-12 my-2 bg-white hotel-box shadow" data-name="<?php echo $mainHotels["name"] ?>" data-star="<?php echo $mainHotels["rating"] ?>" data-price="<?php echo $rate["price"] ?>">
+                        <div class="col-12 my-2 bg-white hotel-box shadow" value="<?php echo $mainHotels["name"] ?>" data-name="<?php echo $mainHotels["name"] ?>" data-star="<?php echo $mainHotels["rating"] ?>" data-price="<?php echo $rate["price"] ?>">
                             <div class="row">
                                 <div class="col-4 p-0">
                                     <img src="<?php echo './admin/hotel profile images/' . $mainHotels["image"] ?>" class="w-100 h-100 img-fluid" alt="">
@@ -155,12 +178,12 @@ if (isset($_GET["airport"])) {
                                         } ?>
                                     </div>
                                 </div>
-                                <div class="col-3 pt-2 pr-1">
+                                <div class="col-3 pt-2 pr-2">
                                     <div class="features lato"><?php echo $mainHotels["parking"] ?></div>
-                                    <div class="font-13 lato"><span class="fa fa-bed text-secondary"></span><?php echo $rate["accomodation"] ?></div>
+                                    <div class="font-15 lato"><span class="fa fa-bed text-secondary"></span><?php echo $rate["accomodation"] ?></div>
                                     <div class="text-right pr-3 price lato"><span class="font-27"><?php echo $rate["price"] ?></span><sup class="usd">USD</sup></div>
                                     <button class="btn btn-success btn-block lato">Book Now</button>
-                                    <div class="more-rates lato font-13 text-center mt-1"><span class="fa fa-arrow-circle-right mr-2"></span><span>Show more rates</span></div>
+                                    <div class="more-rates lato font-13 text-right mt-1"><span class="fa fa-arrow-circle-right mr-2"></span><span>Show more rates</span></div>
                                 </div>
                             </div>
                         </div>
@@ -194,21 +217,62 @@ if (isset($_GET["airport"])) {
                     return (contentA < contentB) ? -1 : (contentA > contentB) ? 1 : 0;
                 }).appendTo(".main-container")
             })
-            $("#three-star").click(function(){
-               $(".hotel-box[data-star='3']").show();
-               $(".hotel-box[data-star='4'], .hotel-box[data-star='5']").hide();
+            $("#three-star").click(function() {
+                $(".hotel-box[data-star='3']").show();
+                $(".hotel-box[data-star='4'], .hotel-box[data-star='5']").hide();
             })
-            $("#four-star").click(function(){
-               $(".hotel-box[data-star='4']").show();
-               $(".hotel-box[data-star='3'], .hotel-box[data-star='5']").hide();
+            $("#four-star").click(function() {
+                $(".hotel-box[data-star='4']").show();
+                $(".hotel-box[data-star='3'], .hotel-box[data-star='5']").hide();
             })
-            $("#five-star").click(function(){
-               $(".hotel-box[data-star='5']").show();
-               $(".hotel-box[data-star='3'], .hotel-box[data-star='4']").hide();
+            $("#five-star").click(function() {
+                $(".hotel-box[data-star='5']").show();
+                $(".hotel-box[data-star='3'], .hotel-box[data-star='4']").hide();
             })
-            $("#any").click(function(){
-               $(".hotel-box[data-star='5'], .hotel-box[data-star='3'], .hotel-box[data-star='4']").show();
+            $("#any").click(function() {
+                $(".hotel-box[data-star='5'], .hotel-box[data-star='3'], .hotel-box[data-star='4']").show();
             })
+            $("#all-prices").click(function() {
+                $(".hotel-box").show();
+            })
+            $("#low-price").click(function() {
+                $(".hotel-box").show();
+                $(".hotel-box").filter(function() {
+                    return $(this).data("price") > 90;
+                }).hide()
+            })
+            $("#mid-price").click(function() {
+                $(".hotel-box").show();
+                $(".hotel-box").filter(function() {
+                    return $(this).data("price") < 90;
+                }).hide()
+                $(".hotel-box").filter(function() {
+                    return $(this).data("price") > 110;
+                }).hide()
+            })
+            $("#high-price").click(function() {
+                $(".hotel-box").show();
+                $(".hotel-box").filter(function() {
+                    return $(this).data("price") < 110;
+                }).hide()
+                $(".hotel-box").filter(function() {
+                    return $(this).data("price") > 199;
+                }).hide()
+            })
+            $("#property-search").keyup(function() {
+                var value = $(this).val().toLowerCase();
+                $(".hotel-box").each(function(){
+                    $(this).filter(function() {
+                        $(this).toggle($(this).first().text().toLowerCase().indexOf(value) > -1)
+                    });
+                })
+            })
+            $i =0;
+            $(".hotel-box").each(function(){
+                $i++
+            })
+            $(".count").text($i)
+
         })
     </script>
 </body>
