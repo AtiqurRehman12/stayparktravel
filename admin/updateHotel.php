@@ -8,7 +8,8 @@ if (isset($_GET["id"])) {
     $hotels = select_where("hotels", "id", $hotel_id, $connection, 1);
     $hotel_services = select_where("hotel_services", "hotel_id", $hotel_id, $connection, 2);
     $hotel_features = select_where("hotel_features", "hotel_id", $hotel_id, $connection, 2);
-    $rates = select_all("hotel_rates", $connection);
+    $rates = select_where("hotel_rates", "hotel_id", $hotel_id, $connection, 2);
+    $seasons = select_all("seasons", $connection);
 }
 if (isset($_POST["submit"])) {
     $image = $_FILES["image"]["name"];
@@ -48,11 +49,17 @@ if (isset($_POST["submit"])) {
         mysqli_query($connection, "INSERT INTO `hotel_features`(`feature`, `hotel_id`)VALUES('$update_features', '$hotel_id')");
     }
     mysqli_query($connection, "DELETE FROM `hotel_rates` WHERE `hotel_id` = $hotel_id");
+    foreach($_POST["season"] as $sea){
+        $season_arr[] = $sea;
+    }
+    $season_index = 0;
     foreach (array_combine($_POST["price"], $_POST["accomodation"]) as $rate_key => $rate_val) {
-        if($rate_key != "" && $rate_val !=""){
-        $price = $rate_key;
-        $accom = $rate_val;
-        mysqli_query($connection, "INSERT INTO hotel_rates(`price` , `accomodation`, `hotel_id`)VALUES('$price', '$accom', '$hotel_id')");
+        if ($rate_key != "" && $rate_val != "") {
+            $price = $rate_key;
+            $accom = $rate_val;
+            $season = $season_arr[$season_index];
+            mysqli_query($connection, "INSERT INTO hotel_rates(`price` , `accomodation`, `season` ,`hotel_id`)VALUES('$price', '$accom', '$season', '$hotel_id')");
+            $season_index++;
         }
     }
     header("location:viewHotels.php");
@@ -211,6 +218,16 @@ if (isset($_POST["submit"])) {
                                         <input type="text" value="<?php echo $mainRates["price"] ?>" name="price[]" class="form-control" id="">
                                         <label for="">Accomodation</label>
                                         <input type="text" value="<?php echo $mainRates["accomodation"] ?>" name="accomodation[]" class="form-control" id="">
+                                        <label for="season">Season</label>
+                                        <select name="season[]" class="form-control" id="season">
+                                            <?php
+                                            foreach ($seasons as $mainSeasons) {
+                                            ?>
+                                                <option value="<?php echo $mainSeasons["name"] ?>" <?php if($mainRates["season"] == $mainSeasons["name"]){echo "selected";}?>><?php echo $mainSeasons["name"] ?></option>
+                                            <?php
+                                            } ?>
+                                        </select>
+
                                     </div>
                                 <?php
                                 } ?>
@@ -223,6 +240,15 @@ if (isset($_POST["submit"])) {
                                         <input type="text" name="price[]" class="form-control" id="">
                                         <label for="">Accomodation</label>
                                         <input type="text" name="accomodation[]" class="form-control" id="">
+                                        <label for="season">Season</label>
+                                        <select name="season[]" class="form-control" id="season">
+                                            <?php
+                                            foreach ($seasons as $mainSeasons) {
+                                            ?>
+                                                <option value="<?php echo $mainSeasons["name"] ?>"><?php echo $mainSeasons["name"] ?></option>
+                                            <?php
+                                            } ?>
+                                        </select>
                                     </div>
                                 </div>
                             </div>

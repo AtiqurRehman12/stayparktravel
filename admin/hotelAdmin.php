@@ -76,9 +76,17 @@
                     </div>
                     <div class="col-4">
                         <div class="card" style="width: 18rem;">
-                            <a href="addFeature.php" class="card-text text-center h4"><img class="card-img-top w-50" src="./adminimages/2620383.png" alt="Card image cap"></a>
+                            <a href="addFeature.php" class="card-text text-center h4"><img class="card-img-top w-50" src="./adminimages/vector-icon-settings-feature-thin-line-sign-isolated-contour-symbol-illustration-167525346.jpg" alt="Card image cap"></a>
                             <div class="card-body text-center">
                                 <a class="card-text h4" href="addFeature.php">Add Feature</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="card" style="width: 18rem;">
+                            <a href="addSeason.php" class="card-text text-center h4"><img class="card-img-top w-50" src="./adminimages/flat-clock-icon-png-7.jpg" style="height: 100px;" alt="Card image cap"></a>
+                            <div class="card-body text-center">
+                                <a class="card-text h4" href="addSeason.php">Add Hotel Season</a>
                             </div>
                         </div>
                     </div>

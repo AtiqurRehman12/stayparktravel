@@ -1,7 +1,8 @@
 <?php
 if (isset($_POST["submit"])) {
     $airport = $_POST["airport"];
-    header("location:searchHotel.php?airport=$airport");
+    $date = $_POST["date"];
+    header("location:searchHotel.php?airport=$airport&&date=$date");
 }
 ?>
 <!DOCTYPE html>
@@ -9,6 +10,7 @@ if (isset($_POST["submit"])) {
 
 <head>
     <?php require_once './inc/header.php' ?>
+
 </head>
 
 <body>
@@ -64,11 +66,12 @@ if (isset($_POST["submit"])) {
                     </div>
                     <div class="col-12 mt-3">
                         <div class="row">
-                            <div class="col-6 p-0">
-                                <input type="text" name="daterange" class="form-control pl-5 rounded-0 datepicker p-4" value="" />
-
+                            <div class="col-6 pl-2 pr-0">
+                                <input name='range' class="form-control rounded-0" style="height: 50px;" id='cal' />
+                                <ul id='ranges'></ul>
+                                <input type="hidden" name="date" id="date">
                             </div>
-                            <div class="col-4 tenant-parent">
+                            <div class="col-4 tenant-parent pl-1">
                                 <span class="fa fa-user user-absolute form-nav-color"></span>
                                 <input type="text" name="" value="1 adult, 0 children, 1 room" class="form-control rounded-0 p-4 tenant-open bg-white" readonly id="">
                                 <div class="col-12 border bg-white position-absolute p-0 tenant-box">
@@ -113,13 +116,41 @@ if (isset($_POST["submit"])) {
     </div>
     <?php require_once './inc/footer.php' ?>
     <script>
-        $(document).ready(function(e) {
-            e.preventdefault
-            $('input[name="daterange"]').daterangepicker({
-                opens: 'left'
-            }, function(start, end, label) {
-                console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
-            });
+        var dates = [];
+        $(document).ready(function() {
+            $("#cal").daterangepicker();
+            $("#cal").on('apply.daterangepicker', function(e, picker) {
+                e.preventDefault();
+                const obj = {
+                    "key": dates.length + 1,
+                    "start": picker.startDate.format('MM/DD/YYYY'),
+                    "end": picker.endDate.format('MM/DD/YYYY')
+                }
+                dates.push(obj);
+                showDates();
+            })
+            $(".remove").on('click', function() {
+                removeDate($(this).attr('key'));
+            })
+        })
+
+        function showDates() {
+            $("#ranges").html("");
+            $.each(dates, function() {
+                const el = "<li>" + this.start + "-" + this.end + "<button class='remove' onClick='removeDate(" + this.key + ")'>-</button></li>";
+                $("#ranges").append(el);
+            })
+        }
+
+        function removeDate(i) {
+            dates = dates.filter(function(o) {
+                return o.key !== i;
+            })
+            showDates();
+        }
+    </script>
+    <script>
+        $(document).ready(function() {
             $(".fa-minus").click(function() {
                 var minusval = $(this).next().val();
                 if (minusval >= 1) {
@@ -139,6 +170,12 @@ if (isset($_POST["submit"])) {
                 var child = $(".children").val();
                 var room = $(".room").val();
                 $(".tenant-open").val(adults + " Adults, " + child + " Children ," + room + " Rooms ")
+            })
+            $("#ranges").hide();
+            $(".applyBtn").mouseleave(function(){
+                var tmp = $("#ranges li:last-child").text();
+                tmp = tmp.substring(0,tmp.length - 1);
+                $("#date").val(tmp)                
             })
         });
     </script>

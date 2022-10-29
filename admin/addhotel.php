@@ -2,6 +2,7 @@
 require_once './inc/sqlfunctions.php';
 $services = select_all("services", $connection);
 $features = select_all("features", $connection);
+$seasons = select_all("seasons", $connection);
 $airports = select_all("airports", $connection);
 if (isset($_POST["submit"])) {
     $image = $_FILES["image"]["name"];
@@ -38,11 +39,17 @@ if (isset($_POST["submit"])) {
         $hotel_service = $_POST["features"][$fea_key];
         mysqli_query($connection, "INSERT INTO hotel_features(`feature`,  `hotel_id`)VALUES('$hotel_service', '$hotel_id')");
     }
+    foreach($_POST["season"] as $sea){
+        $season_arr[] = $sea; 
+    }
+    $season_index =0;
     foreach (array_combine($_POST["price"], $_POST["accomodation"]) as $rate_key => $rate_val) {
         if ($rate_key != "" &&  $rate_val != "") {
             $price = $rate_key;
             $accom = $rate_val;
-            mysqli_query($connection, "INSERT INTO hotel_rates(`price` , `accomodation`, `hotel_id`)VALUES('$price', '$accom', '$hotel_id')");
+            $season = $season_arr[$season_index];
+            mysqli_query($connection, "INSERT INTO hotel_rates(`price` , `accomodation`, `season`,  `hotel_id`)VALUES('$price', '$accom', '$season', '$hotel_id')");
+            $season_index++;
         }
     }
 }
@@ -92,6 +99,7 @@ if (isset($_POST["submit"])) {
             <div class="col-12 my-2 border p-2">
                 <a href="addService.php" class="btn btn-primary">Add Hotel Service</a>
                 <a href="addFeature.php" class="btn btn-primary">Add Hotel Feature</a>
+                <a href="addSeason.php" class="btn btn-primary">Add Hotel Season</a>
             </div>
             <div class="col-11 mx-auto border">
                 <form action="" method="post" enctype="multipart/form-data">
@@ -183,6 +191,15 @@ if (isset($_POST["submit"])) {
                                         <input type="text" name="price[]" class="form-control" id="">
                                         <label for="">Accomodation</label>
                                         <input type="text" name="accomodation[]" class="form-control" id="">
+                                        <label for="season">Season</label>
+                                        <select name="season[]" class="form-control" id="season">
+                                            <?php
+                                            foreach ($seasons as $mainSeasons) {
+                                            ?>
+                                                <option value="<?php echo $mainSeasons["name"] ?>"><?php echo $mainSeasons["name"] ?></option>
+                                            <?php
+                                            } ?>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -193,6 +210,15 @@ if (isset($_POST["submit"])) {
                                     <input type="text" name="price[]" class="form-control" id="">
                                     <label for="">Accomodation</label>
                                     <input type="text" name="accomodation[]" class="form-control" id="">
+                                    <label for="season">Season</label>
+                                    <select name="season[]" class="form-control" id="season">
+                                        <?php
+                                        foreach ($seasons as $mainSeasons) {
+                                        ?>
+                                            <option value="<?php echo $mainSeasons["name"] ?>"><?php echo $mainSeasons["name"] ?></option>
+                                        <?php
+                                        } ?>
+                                    </select>
                                 </div>
                             </div>
                             <div class="added-acc p-2">

@@ -1,8 +1,15 @@
 <?php
 require_once './admin/inc/sqlfunctions.php';
-if (isset($_GET["airport"])) {
+if (isset($_GET["airport"]) && isset($_GET["date"])) {
     $airport = $_GET["airport"];
+    $date = $_GET["date"];
     $hotels = select_where_string("hotels", "airport", $airport, $connection, 2);
+    $date_arr = explode('-', $date);
+    $startDate = $date_arr[0];
+    $endDate = end($date_arr);
+    $startDate = date("Y-m-d" , strtotime($startDate));
+    $endDate = date("Y-m-d" , strtotime($endDate));
+    
 }
 ?>
 <!DOCTYPE html>
@@ -24,8 +31,8 @@ if (isset($_GET["airport"])) {
 <body class="bg-light">
     <?php require_once './inc/navbar.php' ?>
     <div class="col-11 mx-auto lato font-20 font-700 hotel-count border-bottom p-2">
-        
-        <span>Showing <span class="count"></span> hotels near <?php echo $airport?></span>
+
+        <span>Showing <span class="count"></span> hotels near <?php echo $airport ?></span>
     </div>
     <div class="col-11 mx-auto mt-2">
         <div class="row">
@@ -112,7 +119,16 @@ if (isset($_GET["airport"])) {
                 if ($hotels != "") {
                     foreach ($hotels as $mainHotels) {
                         $hotel_id = $mainHotels["id"];
-                        $rate = select_where("hotel_rates", "hotel_id", $hotel_id, $connection, 1);
+                        $rateSql = "SELECT seasons.name, seasons.start, seasons.end, hotel_rates.price, hotel_rates.accomodation, hotel_rates.season, hotel_rates.hotel_id
+                        FROM seasons
+                        INNER JOIN hotel_rates ON seasons.name = hotel_rates.season AND hotel_rates.hotel_id = $hotel_id;";
+                        $rateRes = mysqli_query($connection, $rateSql);
+                        if(mysqli_num_rows($rateRes)>0){
+                            while($rateRow = mysqli_fetch_assoc($rateRes)){
+                                $rateData[] = $rateRow;
+                            }
+                            $rate = array_shift($rateData);
+                        }
                 ?>
                         <div class="col-12 my-2 bg-white hotel-box shadow" value="<?php echo $mainHotels["name"] ?>" data-name="<?php echo $mainHotels["name"] ?>" data-star="<?php echo $mainHotels["rating"] ?>" data-price="<?php echo $rate["price"] ?>">
                             <div class="row">
@@ -183,7 +199,28 @@ if (isset($_GET["airport"])) {
                                     <div class="font-15 lato"><span class="fa fa-bed text-secondary"></span><?php echo $rate["accomodation"] ?></div>
                                     <div class="text-right pr-3 price lato"><span class="font-27"><?php echo $rate["price"] ?></span><sup class="usd">USD</sup></div>
                                     <button class="btn btn-success btn-block lato">Book Now</button>
-                                    <div class="more-rates lato font-13 text-right mt-1"><span class="fa fa-arrow-circle-right mr-2"></span><span>Show more rates</span></div>
+                                    <div class="more-rates lato font-13 text-right mt-1 pointer" data-toggle="modal" data-target="#price-modal"><span class="fa fa-arrow-circle-right mr-2"></span><span>Show more rates</span></div>
+
+
+                                    <div class="modal fade" id="price-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header bg-primary">
+                                                    <h5 class="modal-title" id="exampleModalLabel"><?php echo $mainHotels["name"] ?></h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    ...
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-primary">Save changes</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>  
                                 </div>
                             </div>
                         </div>
@@ -261,14 +298,14 @@ if (isset($_GET["airport"])) {
             })
             $("#property-search").keyup(function() {
                 var value = $(this).val().toLowerCase();
-                $(".hotel-box").each(function(){
+                $(".hotel-box").each(function() {
                     $(this).filter(function() {
                         $(this).toggle($(this).first().text().toLowerCase().indexOf(value) > -1)
                     });
                 })
             })
-            $i =0;
-            $(".hotel-box").each(function(){
+            $i = 0;
+            $(".hotel-box").each(function() {
                 $i++
             })
             $(".count").text($i)
