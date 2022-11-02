@@ -82,6 +82,22 @@ function select_where_string($table, $column, $select_id, $connection, $data_rep
         }
     }
 }
+function select_where_rate($hotel_id, $connection, $data_repeat)
+{
+    $rateSql = "SELECT seasons.id, seasons.start, seasons.end , hotel_rates.price, hotel_rates.accomodation, hotel_rates.season, hotel_rates.hotel_id FROM seasons INNER JOIN hotel_rates ON seasons.id = hotel_rates.season AND hotel_rates.hotel_id = $hotel_id ORDER BY price ASC";;
+    $rateRes = mysqli_query($connection, $rateSql);
+    if(mysqli_num_rows($rateRes)>0){
+        while($rateRow = mysqli_fetch_array($rateRes)){
+            $rateData[] =$rateRow;
+        }
+        if($data_repeat == 1){
+        $rate = array_shift($rateData);
+        return $rate;
+        }else if($data_repeat == 2){
+            return $rateData;
+        }
+    }  
+}
 
 function update($table_name, $fields, $where_condition, $connection)
 {

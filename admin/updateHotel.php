@@ -223,11 +223,10 @@ if (isset($_POST["submit"])) {
                                             <?php
                                             foreach ($seasons as $mainSeasons) {
                                             ?>
-                                                <option value="<?php echo $mainSeasons["name"] ?>" <?php if($mainRates["season"] == $mainSeasons["name"]){echo "selected";}?>><?php echo $mainSeasons["name"] ?></option>
+                                                <option value="<?php echo $mainSeasons["id"] ?>" <?php if($mainRates["season"] == $mainSeasons["id"]){echo "selected";}?>><?php echo $mainSeasons["name"] ?></option>
                                             <?php
                                             } ?>
                                         </select>
-
                                     </div>
                                 <?php
                                 } ?>
@@ -245,7 +244,7 @@ if (isset($_POST["submit"])) {
                                             <?php
                                             foreach ($seasons as $mainSeasons) {
                                             ?>
-                                                <option value="<?php echo $mainSeasons["name"] ?>"><?php echo $mainSeasons["name"] ?></option>
+                                                <option value="<?php echo $mainSeasons["id"] ?>"><?php echo $mainSeasons["name"] ?></option>
                                             <?php
                                             } ?>
                                         </select>
@@ -293,7 +292,7 @@ if (isset($_POST["submit"])) {
     <!-- jQuery -->
     <?php require_once './inc/footer.php' ?>
     <script>
-        $(document).ready(function() {
+       $(document).ready(function() {
             $(".accom-box").find(".del-acc").hide();
             $(".add-acc").click(function() {
                 var accom = $(".hidden-accom-box div").clone(true, true);
