@@ -293,7 +293,6 @@ if (isset($_POST["submit"])) {
     <?php require_once './inc/footer.php' ?>
     <script>
        $(document).ready(function() {
-            $(".accom-box").find(".del-acc").hide();
             $(".add-acc").click(function() {
                 var accom = $(".hidden-accom-box div").clone(true, true);
                 $(".added-acc").append(accom);

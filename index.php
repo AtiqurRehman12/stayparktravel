@@ -2,7 +2,11 @@
 if (isset($_POST["submit"])) {
     $airport = $_POST["airport"];
     $date = $_POST["date"];
-    header("location:searchHotel.php?airport=$airport&&date=$date");
+    $child = $_POST["children"];
+    $adults = $_POST["adults"];
+    $rooms = $_POST["rooms"];
+    $pickup = $_POST["pickup"];
+    header("location:searchHotel.php?airport=$airport&date=$date&children=$child&adults=$adults&rooms=$rooms&pickup=$pickup");
 }
 ?>
 <!DOCTYPE html>
@@ -66,10 +70,13 @@ if (isset($_POST["submit"])) {
                     </div>
                     <div class="col-12 mt-3">
                         <div class="row">
-                            <div class="col-6 pl-2 pr-0">
+                            <div class="col-4 pl-2 pr-0">
                                 <input name='range' class="form-control rounded-0" style="height: 50px;" id='cal' />
                                 <ul id='ranges'></ul>
                                 <input type="hidden" name="date" id="date">
+                            </div>
+                            <div class="col-2 p-0">
+                                <input type="date" required name="pickup" id="" class="form-control rounded-0" style="height: 50px;">
                             </div>
                             <div class="col-4 tenant-parent pl-1">
                                 <span class="fa fa-user user-absolute form-nav-color"></span>
@@ -80,7 +87,7 @@ if (isset($_POST["submit"])) {
                                             <div class="col-8 lato">Adult(s)</div>
                                             <div class="col-4 p-0">
                                                 <span class="fa fa-minus"></span>
-                                                <input type="text" class="tenant-input adults" value="1" name="" id="">
+                                                <input type="text" class="tenant-input adults" value="1" name="adults" id="">
                                                 <span class="fa fa-plus"></span>
                                             </div>
                                         </div>
@@ -88,7 +95,7 @@ if (isset($_POST["submit"])) {
                                             <div class="col-8 lato">Child(ren)</div>
                                             <div class="col-4 p-0">
                                                 <span class="fa fa-minus"></span>
-                                                <input type="text" class="tenant-input children" value="0" name="" id="">
+                                                <input type="text" class="tenant-input children" value="0" name="children" id="">
                                                 <span class="fa fa-plus"></span>
                                             </div>
                                         </div>
@@ -96,7 +103,7 @@ if (isset($_POST["submit"])) {
                                             <div class="col-8 lato">Room(s)</div>
                                             <div class="col-4 p-0">
                                                 <span class="fa fa-minus"></span>
-                                                <input type="text" class="tenant-input room" value="1" name="" id="">
+                                                <input type="text" class="tenant-input room" value="1" name="rooms" id="">
                                                 <span class="fa fa-plus"></span>
                                             </div>
                                         </div>
@@ -104,7 +111,7 @@ if (isset($_POST["submit"])) {
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-2">
+                            <div class="col-2 pl-0">
                                 <button type="submit" name="submit" class="btn lato btn-success find-button w-100 h-100 font-20">Find Hotel</button>
                             </div>
                         </div>
@@ -178,6 +185,16 @@ if (isset($_POST["submit"])) {
                 $("#date").val(tmp)                
             })
         });
+    </script>
+    <script>
+        $("form").validate({
+            rules: {
+                "airport": "required",
+            },
+            message: {
+                "airport" : "Field is Required"
+            }
+        })
     </script>
 </body>
 

@@ -1,14 +1,20 @@
 <?php
 require_once './admin/inc/sqlfunctions.php';
 if (isset($_GET["airport"]) && isset($_GET["date"])) {
+    $children = $_GET["children"];
+    $adults = $_GET["adults"];
+    $rooms = $_GET["rooms"];
     $airport = $_GET["airport"];
     $date = $_GET["date"];
+    $pickup = $_GET["pickup"];
     $hotels = select_where_string("hotels", "airport", $airport, $connection, 2);
     $date_arr = explode('-', $date);
     $startDate = $date_arr[0];
     $endDate = end($date_arr);
     $startDate = date("Y-m-d", strtotime($startDate));
     $endDate = date("Y-m-d", strtotime($endDate));
+    $stayNights = date("d", strtotime($endDate)) - date("d", strtotime($startDate));
+    $stayNights = abs($stayNights);
 }
 ?>
 <!DOCTYPE html>
@@ -118,26 +124,26 @@ if (isset($_GET["airport"]) && isset($_GET["date"])) {
                 if ($hotels != "") {
                     foreach ($hotels as $mainHotels) {
                         $price = [];
-                        $accom =[];
+                        $accom = [];
                         $hotel_id = $mainHotels["id"];
                         $rate = select_where_rate($hotel_id, $connection, 2);
-                        foreach($rate as $mainRate){
-                            if($startDate < $mainRate["start"]){
+                        foreach ($rate as $mainRate) {
+                            if ($startDate < $mainRate["start"]) {
                                 continue;
-                            }elseif($startDate > $mainRate["end"]){
+                            } elseif ($startDate > $mainRate["end"]) {
                                 continue;
                             }
-                            
-                            $price[] = $mainRate["price"]; 
+
+                            $price[] = $mainRate["price"];
                             $accom[] = $mainRate["accomodation"];
                         }
-                        if(count($price)==0){
+                        if (count($price) == 0) {
                             $lowPrice = "";
-                        }else{
+                        } else {
                             $lowPrice = min($price);
                         }
-                        
-                        
+
+
                 ?>
                         <div class="col-12 my-2 bg-white hotel-box shadow" value="<?php echo $mainHotels["name"] ?>" data-name="<?php echo $mainHotels["name"] ?>" data-star="<?php echo $mainHotels["rating"] ?>" data-price="<?php echo $lowPrice; ?>">
                             <div class="row">
@@ -206,11 +212,11 @@ if (isset($_GET["airport"]) && isset($_GET["date"])) {
                                     <div class="features lato"><?php echo $mainHotels["parking"] ?></div>
                                     <?php
                                     foreach ($rate as $mainRate) {
-                                        if($startDate < $mainRate["start"]){
+                                        if ($startDate < $mainRate["start"]) {
                                             continue;
-                                        }elseif($startDate > $mainRate["end"]){
+                                        } elseif ($startDate > $mainRate["end"]) {
                                             continue;
-                                        }elseif($mainRate["price"] != $lowPrice){
+                                        } elseif ($mainRate["price"] != $lowPrice) {
                                             continue;
                                         }
                                     ?>
@@ -219,31 +225,44 @@ if (isset($_GET["airport"]) && isset($_GET["date"])) {
                                     <?php
                                     }
                                     ?>
-                                    <button class="btn <?php if(count($price)==0){echo "btn-danger mt-5";}else{echo "btn-success";}?>  btn-block lato"><?php if(count($price)==0){echo "Not Available";}else{echo "Book Now";} ?></button>
-                                    <div class="<?php if(count($price)==0 || count($price)==1){echo "d-none";} ?> more-rates lato font-13 text-right mt-1 pointer" data-toggle="modal" data-target="#<?php $modalName = str_replace(" ", "-", $mainHotels["name"]); echo str_replace("&","s", $modalName);?>"><span class="fa fa-arrow-circle-right mr-2"></span><span>Show more rates</span></div>
+                                    <button class="btn <?php if (count($price) == 0) {
+                                                            echo "btn-danger mt-5";
+                                                        } else {
+                                                            echo "btn-success";
+                                                        } ?>  btn-block lato" data-toggle="modal" data-target="#<?php $modalName = str_replace(" ", "-", $mainHotels["name"]);
+                                                                                                                echo str_replace("&", "s", $modalName); ?>"><?php if (count($price) == 0) {
+                                                                                                        echo "Not Available";
+                                                                                                    } else {
+                                                                                                        echo "Book Now";
+                                                                                                    } ?></button>
+                                    <div class="<?php if (count($price) == 0 || count($price) == 1) {
+                                                    echo "d-none";
+                                                } ?> more-rates lato text-right mt-1 pointer" data-toggle="modal" data-target="#<?php $modalName = str_replace(" ", "-", $mainHotels["name"]);
+                                                                                                                                echo str_replace("&", "s", $modalName); ?>"><span class="fa fa-arrow-circle-right mr-2"></span><span>Show more rates</span></div>
 
-                                    <div class="modal fade" id="<?php $modalName = str_replace(" ", "-", $mainHotels["name"]); echo str_replace("&","s", $modalName);?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal fade" id="<?php $modalName = str_replace(" ", "-", $mainHotels["name"]);
+                                                                echo str_replace("&", "s", $modalName); ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                         <div class="modal-dialog modal-lg" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header bg-primary">
-                                                    <h5 class="modal-title" id="exampleModalLabel"><?php echo $mainHotels["name"] ?></h5>
+                                                    <h5 class="modal-title text-white" id="exampleModalLabel"><?php echo $mainHotels["name"] ?></h5>
                                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                         <span aria-hidden="true">&times;</span>
                                                     </button>
                                                 </div>
                                                 <div class="modal-body">
                                                     <?php
-                                                    foreach(array_combine($price, $accom) as $key => $val){
+                                                    foreach (array_combine($price, $accom) as $key => $val) {
                                                     ?>
-                                                    <div class="border bg-warning lato font-20 p-2"><span><?php echo $val ?></span> <span class="float-right"><?php echo $key. "$" ?></span></div>
+                                                        <div class="border bg-primary">
+                                                            <div class="lato font-20 p-1"><span class="font-15 text-white"><?php echo $val ?></span> <a href="confirmation.php?stay=<?php echo $stayNights. "&hotel_id=". $mainHotels["id"] ."&startDate=". $startDate ."&endDate=".$endDate . "&children=".$children . "&adults=".$adults."&rooms=".$rooms."&price=".$key."&accomodation=".$val."&pickup=".$pickup;?>" class="p-2 btn btn-success mt-1 float-right ml-5">Book Now</a><span class="float-right mr-5 lato text-white font-weight-bold"><?php echo $key . "$" ?></span></div>
+                                                            <div class="lato font-15 text-white pl-1"><?php echo $mainHotels["parking"] ?></div>
+                                                        </div>
                                                     <?php
                                                     }
                                                     ?>
                                                 </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                    <button type="button" class="btn btn-primary">Save changes</button>
-                                                </div>
+
                                             </div>
                                         </div>
                                     </div>
