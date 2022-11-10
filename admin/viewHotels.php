@@ -69,7 +69,7 @@ $hotels = select_all("hotels", $connection);
                             <td><img src="<?php echo './hotel profile images/'. $mainhotels["image"] ?>" style="width: 100px;" alt=""></td>
 
                             <td>
-                                <a href="deleteHotel.php?id=<?php echo $mainhotels["id"] ?>"><span class="fa fa-trash-alt text-danger"></span></a>
+                                <a href="deleteHotel.php?id=<?php echo $mainhotels["id"] ?>" onclick="return confirm('Are you sure?');"><span class="fa fa-trash-alt text-danger"></span></a>
                                 <a href="updateHotel.php?id=<?php echo $mainhotels["id"] ?>"><span class="fa fa-pen-alt text-success" ></span></a>
                             </td>
                         </tr>

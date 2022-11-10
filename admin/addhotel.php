@@ -39,17 +39,23 @@ if (isset($_POST["submit"])) {
         $hotel_service = $_POST["features"][$fea_key];
         mysqli_query($connection, "INSERT INTO hotel_features(`feature`,  `hotel_id`)VALUES('$hotel_service', '$hotel_id')");
     }
-    foreach($_POST["season"] as $sea){
-        $season_arr[] = $sea; 
+    foreach ($_POST["season"] as $sea) {
+        $season_arr[] = $sea;
     }
-    $season_index =0;
+    foreach($_POST["roomnumbers"] as $room_quan){
+        $room_arr[] = $room_quan;
+    }
+    $season_index = 0;
+    $room_index = 0;
     foreach (array_combine($_POST["price"], $_POST["accomodation"]) as $rate_key => $rate_val) {
         if ($rate_key != "" &&  $rate_val != "") {
             $price = $rate_key;
             $accom = $rate_val;
             $season = $season_arr[$season_index];
-            mysqli_query($connection, "INSERT INTO hotel_rates(`price` , `accomodation`, `season`,  `hotel_id`)VALUES('$price', '$accom', '$season', '$hotel_id')");
+            $rooms = $room_arr[$room_index];
+            mysqli_query($connection, "INSERT INTO hotel_rates(`price` , `accomodation`, `season`, `rooms`,  `hotel_id`)VALUES('$price', '$accom', '$season', '$rooms', '$hotel_id')");
             $season_index++;
+            $room_index++;
         }
     }
 }
@@ -62,6 +68,9 @@ if (isset($_POST["submit"])) {
     <style>
         .pointer {
             cursor: pointer;
+        }
+        .border-custom{
+            border: 3px solid cadetblue;
         }
     </style>
 </head>
@@ -183,9 +192,9 @@ if (isset($_POST["submit"])) {
                         <div class="col-12 border main-accom-box">
                             <label for="">Rates</label>
                             <span class="fa fa-plus pointer add-acc float-right"></span>
-                            <div class="accom-box border p-2">
+                            <div class="accom-box p-2">
                                 <div class="inner-accom">
-                                    <div>
+                                    <div class="border-custom p-2">
                                         <span class="fa fa-minus del-acc pointer float-right"></span>
                                         <label for="">Price</label>
                                         <input type="text" name="price[]" class="form-control" id="">
@@ -200,11 +209,13 @@ if (isset($_POST["submit"])) {
                                             <?php
                                             } ?>
                                         </select>
+                                        <label for="">Number of Room</label>
+                                        <input type="text" class="form-control" name="roomnumbers[]" id="">
                                     </div>
                                 </div>
                             </div>
                             <div class="hidden-accom-box d-none">
-                                <div>
+                                <div class="border-custom p-4 my-3">
                                     <span class="fa fa-minus del-acc pointer float-right"></span>
                                     <label for="">Price</label>
                                     <input type="text" name="price[]" class="form-control" id="">
@@ -219,6 +230,8 @@ if (isset($_POST["submit"])) {
                                         <?php
                                         } ?>
                                     </select>
+                                    <label for="">Number of Room</label>
+                                    <input type="text" class="form-control" name="roomnumbers[]" id="">
                                 </div>
                             </div>
                             <div class="added-acc p-2">

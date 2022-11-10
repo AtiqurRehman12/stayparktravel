@@ -15,6 +15,7 @@ if (isset($_GET["airport"]) && isset($_GET["date"])) {
     $endDate = date("Y-m-d", strtotime($endDate));
     $stayNights = date("d", strtotime($endDate)) - date("d", strtotime($startDate));
     $stayNights = abs($stayNights);
+    $booking = select_all("guests", $connection);
 }
 ?>
 <!DOCTYPE html>

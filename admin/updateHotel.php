@@ -49,17 +49,23 @@ if (isset($_POST["submit"])) {
         mysqli_query($connection, "INSERT INTO `hotel_features`(`feature`, `hotel_id`)VALUES('$update_features', '$hotel_id')");
     }
     mysqli_query($connection, "DELETE FROM `hotel_rates` WHERE `hotel_id` = $hotel_id");
-    foreach($_POST["season"] as $sea){
+    foreach ($_POST["season"] as $sea) {
         $season_arr[] = $sea;
     }
+    foreach($_POST["roomnumbers"] as $room_quan){
+        $room_arr[] = $room_quan;
+    }
     $season_index = 0;
+    $room_index = 0;
     foreach (array_combine($_POST["price"], $_POST["accomodation"]) as $rate_key => $rate_val) {
         if ($rate_key != "" && $rate_val != "") {
             $price = $rate_key;
             $accom = $rate_val;
             $season = $season_arr[$season_index];
-            mysqli_query($connection, "INSERT INTO hotel_rates(`price` , `accomodation`, `season` ,`hotel_id`)VALUES('$price', '$accom', '$season', '$hotel_id')");
+            $rooms = $room_arr[$room_index];
+            mysqli_query($connection, "INSERT INTO hotel_rates(`price` , `accomodation`, `season`, `rooms` ,`hotel_id`)VALUES('$price', '$accom', '$season', '$rooms', '$hotel_id')");
             $season_index++;
+            $room_index++;
         }
     }
     header("location:viewHotels.php");
@@ -73,6 +79,9 @@ if (isset($_POST["submit"])) {
     <style>
         .pointer {
             cursor: pointer;
+        }
+        .border-custom{
+            border: 3px solid cadetblue;
         }
     </style>
 </head>
@@ -208,11 +217,11 @@ if (isset($_POST["submit"])) {
                         <div class="col-12 border main-accom-box">
                             <label for="">Rates</label>
                             <span class="fa fa-plus pointer add-acc float-right"></span>
-                            <div class="accom-box border p-2">
+                            <div class="accom-box p-2">
                                 <?php foreach ($rates as $mainRates) {
 
                                 ?>
-                                    <div class="inner-accom">
+                                    <div class="inner-accom border-custom my-2 p-2">
                                         <span class="fa fa-minus del-acc pointer float-right"></span>
                                         <label for="">Price</label>
                                         <input type="text" value="<?php echo $mainRates["price"] ?>" name="price[]" class="form-control" id="">
@@ -223,17 +232,21 @@ if (isset($_POST["submit"])) {
                                             <?php
                                             foreach ($seasons as $mainSeasons) {
                                             ?>
-                                                <option value="<?php echo $mainSeasons["id"] ?>" <?php if($mainRates["season"] == $mainSeasons["id"]){echo "selected";}?>><?php echo $mainSeasons["name"] ?></option>
+                                                <option value="<?php echo $mainSeasons["id"] ?>" <?php if ($mainRates["season"] == $mainSeasons["id"]) {
+                                                                                                        echo "selected";
+                                                                                                    } ?>><?php echo $mainSeasons["name"] ?></option>
                                             <?php
                                             } ?>
                                         </select>
+                                        <label for="">Number of Room</label>
+                                        <input type="text" value="<?php echo $mainRates["rooms"]?>" class="form-control" name="roomnumbers[]" id="">
                                     </div>
                                 <?php
                                 } ?>
                             </div>
                             <div class="hidden-accom d-none">
                                 <div class="hidden-accom-box">
-                                    <div>
+                                    <div class="p-4 border-custom">
                                         <span class="fa fa-minus del-acc pointer float-right"></span>
                                         <label for="">Price</label>
                                         <input type="text" name="price[]" class="form-control" id="">
@@ -248,6 +261,8 @@ if (isset($_POST["submit"])) {
                                             <?php
                                             } ?>
                                         </select>
+                                        <label for="">Number of Room</label>
+                                        <input type="text" class="form-control" name="roomnumbers[]" id="">
                                     </div>
                                 </div>
                             </div>
@@ -292,7 +307,7 @@ if (isset($_POST["submit"])) {
     <!-- jQuery -->
     <?php require_once './inc/footer.php' ?>
     <script>
-       $(document).ready(function() {
+        $(document).ready(function() {
             $(".add-acc").click(function() {
                 var accom = $(".hidden-accom-box div").clone(true, true);
                 $(".added-acc").append(accom);

@@ -254,7 +254,7 @@ if(isset($_POST["submit"])){
                                     </div>
                                     <div class="row mt-3">
                                         <div class="col-12">
-                                            <button type="submit" class="btn btn-primary py-2 px-3" name="submit">Confirm Reservation</button>
+                                            <button type="submit" onclick="return confirm('Do you want to make this reservation?');" class="btn btn-primary py-2 px-3" name="submit">Confirm Reservation</button>
                                         </div>
                                     </div>
                                 </div>
