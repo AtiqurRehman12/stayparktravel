@@ -84,7 +84,7 @@ function select_where_string($table, $column, $select_id, $connection, $data_rep
 }
 function select_where_rate($hotel_id, $connection, $data_repeat)
 {
-    $rateSql = "SELECT seasons.id, seasons.start, seasons.end , hotel_rates.price, hotel_rates.accomodation, hotel_rates.season, hotel_rates.hotel_id FROM seasons INNER JOIN hotel_rates ON seasons.id = hotel_rates.season AND hotel_rates.hotel_id = $hotel_id ORDER BY price ASC";;
+    $rateSql = "SELECT hotel_rates.id, seasons.start, hotel_rates.rooms ,  seasons.end , hotel_rates.price,  hotel_rates.accomodation, hotel_rates.season, hotel_rates.hotel_id FROM seasons INNER JOIN hotel_rates ON seasons.id = hotel_rates.season AND hotel_rates.hotel_id = $hotel_id ORDER BY price ASC";;
     $rateRes = mysqli_query($connection, $rateSql);
     if(mysqli_num_rows($rateRes)>0){
         while($rateRow = mysqli_fetch_array($rateRes)){

@@ -11,6 +11,7 @@ $adults = $_GET["adults"];
 $rooms = $_GET["rooms"];
 $price = $_GET["price"];
 $accomodation = $_GET["accomodation"];
+$room_num = $_GET["room_no"];
 
 if(isset($_POST["submit"])){
     $expiryDate = $_POST["month"] . "/" . $_POST["year"];
@@ -30,6 +31,7 @@ if(isset($_POST["submit"])){
         "rooms" => $rooms,
         "adults" => $adults,
         "children" => $children,
+        "room_num" => $room_num,
         "hotel_id" => $hotel["id"],
     );
     insert_func("guests" , $guest_arr, $connection);

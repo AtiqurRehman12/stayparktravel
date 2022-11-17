@@ -98,6 +98,14 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-4">
+                        <div class="card" style="width: 18rem;">
+                            <a href="bookedRooms.php" class="card-text text-center h4"><img class="card-img-top w-50" src="./adminimages/127528463-booking-icon-vector-illustration (1).webp" style="height: 100px;" alt="Card image cap"></a>
+                            <div class="card-body text-center">
+                                <a class="card-text h4" href="bookedRooms.php">Booked Rooms</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- /.content -->

@@ -1,6 +1,6 @@
 <?php
 require_once './inc/sqlfunctions.php';
-$bookingSql = "SELECT guests.first_name, guests.last_name , guests.email, guests.number, guests.address, guests.zip , guests.check_in, guests.check_out, guests.vehical_pickup, guests.room_type, guests.dues, guests.stay_nights, guests.rooms, guests.adults, guests.children ,payment.card_number, payment.name_on_card, payment.payment_time
+$bookingSql = "SELECT guests.first_name, guests.last_name , guests.email, guests.number, guests.address, guests.zip , guests.check_in, guests.check_out, guests.vehical_pickup, guests.room_type, guests.dues, guests.stay_nights, guests.room_num, guests.rooms, guests.adults, guests.children ,payment.card_number, payment.name_on_card, payment.payment_time
 FROM guests
 INNER JOIN payment ON guests.id = payment.guest_id";
 $bookingRes = mysqli_query($connection, $bookingSql);
@@ -66,11 +66,11 @@ if(mysqli_num_rows($bookingRes)>0){
                             <th scope="col">Phone#</th>
                             <th scope="col">Address</th>
                             <th scope="col">Zip</th>
-                            <th scope="col">Stay Dates</th>
                             <th scope="col">Vehical PickUp</th>
                             <th scope="col">Check In</th>
                             <th scope="col">Check Out</th>
                             <th scope="col">Room</th>
+                            <th scope="col">Room Number</th>
                             <th scope="col">No. of Rooms</th>
                             <th scope="col">No. of Adults/Children</th>
                             <th scope="col">Dues</th>
@@ -92,11 +92,11 @@ if(mysqli_num_rows($bookingRes)>0){
                             <td><?php echo $mainBookingData["number"] ?></td>
                             <td><?php echo $mainBookingData["address"] ?></td>
                             <td><?php echo $mainBookingData["zip"] ?></td>
-                            <td><?php echo $mainBookingData["check_in"] . " - " . $mainBookingData["check_out"] ?></td>
                             <td><?php echo $mainBookingData["vehical_pickup"] ?></td>
                             <td><?php echo $mainBookingData["check_in"] ?></td>
                             <td><?php echo $mainBookingData["check_out"] ?></td>
                             <td><?php echo $mainBookingData["room_type"] ?></td>
+                            <td><?php echo $mainBookingData["room_num"] ?></td>
                             <td><?php echo $mainBookingData["rooms"] ?></td>
                             <td><?php echo $mainBookingData["adults"] . " Adults ," . $mainBookingData["children"] . " Children" ?></td>
                             <td><?php echo $mainBookingData["dues"] . "$" ?></td>
