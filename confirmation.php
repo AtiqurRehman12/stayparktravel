@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once './admin/inc/sqlfunctions.php';
 $hotel_id = $_GET["hotel_id"];
 $hotel = select_where("hotels", "id", $hotel_id, $connection, 1);
@@ -10,6 +11,7 @@ $children = $_GET["children"];
 $adults = $_GET["adults"];
 $rooms = $_GET["rooms"];
 $price = $_GET["price"];
+$season = $_GET["season"];
 $accomodation = $_GET["accomodation"];
 $room_num = $_GET["room_no"];
 
@@ -32,6 +34,7 @@ if(isset($_POST["submit"])){
         "adults" => $adults,
         "children" => $children,
         "room_num" => $room_num,
+        "season" => $season,
         "hotel_id" => $hotel["id"],
     );
     insert_func("guests" , $guest_arr, $connection);

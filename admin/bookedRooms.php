@@ -1,6 +1,6 @@
 <?php
 require_once './inc/sqlfunctions.php';
-$bookingSql = "SELECT guests.id, guests.first_name, guests.last_name , guests.email, guests.number, guests.address, guests.zip , guests.check_in, guests.check_out, guests.vehical_pickup, guests.room_type, guests.dues, guests.stay_nights, guests.room_num, guests.rooms, guests.adults, guests.children ,payment.card_number, payment.name_on_card, payment.payment_time, guests.hotel_id
+$bookingSql = "SELECT guests.id, guests.first_name, guests.last_name , guests.season , guests.email, guests.number, guests.address, guests.zip , guests.check_in, guests.check_out, guests.vehical_pickup, guests.room_type, guests.dues, guests.stay_nights, guests.room_num, guests.rooms, guests.adults, guests.children ,payment.card_number, payment.name_on_card, payment.payment_time, guests.hotel_id
 FROM guests
 INNER JOIN payment ON guests.id = payment.guest_id";
 $bookingRes = mysqli_query($connection, $bookingSql);
@@ -13,6 +13,7 @@ if (mysqli_num_rows($bookingRes) > 0) {
 
 ?>
 <?php
+if(!empty($bookingData)){
 foreach ($bookingData as $delBooking) {
     if ($delBooking["check_out"] < date("Y-m-d")) {
         $delId = $delBooking["id"];
@@ -20,6 +21,7 @@ foreach ($bookingData as $delBooking) {
         delete_func("guests", $delId, $connection);
         delete_where_fun("payments", "guest_id", $delId, $connection);
     }
+}
 }
 ?>
 <!DOCTYPE html>
@@ -77,12 +79,14 @@ foreach ($bookingData as $delBooking) {
                             <th scope="col">Room</th>
                             <th scope="col">Room Number</th>
                             <th scope="col">No. of Rooms</th>
+                            <th scope="col">Season</th>
                             <th scope="col">Hotel Id</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
                         $i = 1;
+                        if(!empty($bookingData)){
                         foreach ($bookingData as $mainBookingData) {
 
                         ?>
@@ -94,18 +98,20 @@ foreach ($bookingData as $delBooking) {
                                 <td><?php echo $mainBookingData["room_type"] ?></td>
                                 <td><?php echo $mainBookingData["room_num"] ?></td>
                                 <td><?php echo $mainBookingData["rooms"] ?></td>
+                                <td><?php echo $mainBookingData["season"] ?></td>
                                 <td><?php echo $mainBookingData["hotel_id"] ?></td>
 
                             </tr>
                         <?php
                             $i++;
                         }
+                    }
                         ?>
                     </tbody>
                 </table>
             </div>
             <div class="col-11 mx-auto mt-2">
-                <a href="addFeature.php" class="btn btn-primary">Go back</a>
+                <a href="hotelAdmin.php" class="btn btn-primary">Go back</a>
 
             </div>
             <!-- /.content -->

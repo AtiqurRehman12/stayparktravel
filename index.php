@@ -1,3 +1,4 @@
+<?php require_once './login.php' ?>
 <?php
 if (isset($_POST["submit"])) {
     $airport = $_POST["airport"];
@@ -9,6 +10,7 @@ if (isset($_POST["submit"])) {
     header("location:searchHotel.php?airport=$airport&date=$date&children=$child&adults=$adults&rooms=$rooms&pickup=$pickup");
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 

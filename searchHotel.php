@@ -1,5 +1,5 @@
+<?php require_once './login.php'; ?>
 <?php
-require_once './admin/inc/sqlfunctions.php';
 if (isset($_GET["airport"]) && isset($_GET["date"])) {
     $children = $_GET["children"];
     $adults = $_GET["adults"];
@@ -29,13 +29,15 @@ if (mysqli_num_rows($bookingRes) > 0) {
         $bookingData[] = $bookingRow;
     }
 }
+if(!empty($bookingData)){
 foreach ($bookingData as $delBooking) {
     if ($delBooking["check_out"] < date("Y-m-d")) {
         $delId = $delBooking["id"];
         echo $delId;
         delete_func("guests", $delId, $connection);
-        delete_where_fun("payments", "guest_id", $delId, $connection);
+        delete_where_fun("payment", "guest_id", $delId, $connection);
     }
+}
 }
 ?>
 <!DOCTYPE html>
@@ -167,6 +169,8 @@ foreach ($bookingData as $delBooking) {
                         }
 
 
+
+
                 ?>
                         <div class="col-12 my-2 bg-white hotel-box shadow" value="<?php echo $mainHotels["name"] ?>" data-name="<?php echo $mainHotels["name"] ?>" data-star="<?php echo $mainHotels["rating"] ?>" data-price="<?php echo $lowPrice; ?>">
                             <div class="row">
@@ -234,83 +238,101 @@ foreach ($bookingData as $delBooking) {
                                 <div class="col-3 pt-2 pr-2">
                                     <div class="features lato"><?php echo $mainHotels["parking"] ?></div>
                                     <?php
+                                    $seasonId = "";
+                                    $availableRoom = [];
+                                    $priceLoopCount = 0;
+                                    $skipCount = 0;
                                     foreach ($rate as $mainRate) {
+                                        $priceLoopCount++;
                                         if ($startDate < $mainRate["start"]) {
+                                            $skipCount++;
                                             continue;
                                         } elseif ($startDate > $mainRate["end"]) {
+                                            $skipCount++;
                                             continue;
                                         } elseif ($mainRate["price"] != $lowPrice) {
+                                            $skipCount++;
                                             continue;
                                         }
-                                        $roomCount = 0;
-                                        $availableRoomSql = "SELECT * FROM guests WHERE hotel_id = $hotel_id";
-                                        $availableRoomRes = mysqli_query($connection, $availableRoomSql);
-                                        if (mysqli_num_rows($availableRoomRes) > 0) {
-                                            while ($availableRoomRow = mysqli_fetch_assoc($availableRoomRes)) {
-                                                $availableRoom[] = $availableRoomRow;
-                                            }
-                                            foreach ($availableRoom as $mainAvailableRoom) {
-                                                if($mainAvailableRoom["check_out"] >= $startDate && $startDate >= $mainAvailableRoom["check_in"] || $endDate >= $mainAvailableRoom["check_in"]){
-                                                    $roomCount += $mainAvailableRoom["rooms"];
+                                            $seasonId = $mainRate["season"];
+                                            $roomCount = 0;
+                                            $availableRoomSql = "SELECT * FROM guests WHERE hotel_id = $hotel_id AND season = $seasonId";
+                                            $availableRoomRes = mysqli_query($connection, $availableRoomSql);
+                                            if (mysqli_num_rows($availableRoomRes) > 0) {
+                                                while ($availableRoomRow = mysqli_fetch_assoc($availableRoomRes)) {
+                                                    $availableRoom[] = $availableRoomRow;
+                                                }
+                                                foreach ($availableRoom as $mainAvailableRoom) {
+                                                    if ($mainAvailableRoom["check_out"] >= $startDate && $startDate >= $mainAvailableRoom["check_in"] || $endDate >= $mainAvailableRoom["check_in"]) {
+                                                        $roomCount += $mainAvailableRoom["rooms"];
+                                                    }
                                                 }
                                             }
-                                        }
-                                        echo $roomCount;
+                                            $availableRoomsbutton = $mainRate["rooms"] - $roomCount;
+
 
                                     ?>
-                                        <div class="font-15 <?php if ($mainRate["rooms"] <= $roomCount) {
-                                                                echo "d-none";
-                                                            } ?> lato"><span class="fa fa-bed text-secondary"></span><?php echo $mainRate["accomodation"] ?></div>
-                                        <div class="text-right pr-3 price lato <?php if ($mainRate["rooms"] <= $roomCount) {
-                                                                                    echo "d-none";
-                                                                                } ?>"><span class="font-27"><?php echo $mainRate["price"] ?></span><sup class="usd">USD</sup></div>
+                                            <div class="font-15 <?php if ($mainRate["rooms"] <= $roomCount) {
+                                                                    echo "d-none";
+                                                                } ?> lato"><span class="fa fa-bed text-secondary"></span><?php echo $mainRate["accomodation"] ?></div>
+                                            <div class="text-right pr-3 price lato <?php if ($mainRate["rooms"] <= $roomCount) {
+                                                                                        echo "d-none";
+                                                                                    } ?>"><span class="font-27"><?php echo $mainRate["price"] ?></span><sup class="usd">USD</sup></div>
 
-                                        <button class="btn <?php if (count($price) == 0 || $mainRate["rooms"] <= $roomCount) {
-                                                                echo "btn-danger mt-5";
-                                                            } else {
-                                                                echo "btn-success";
-                                                            } ?>  btn-block lato" data-toggle="<?php if ($mainRate["rooms"] <= $roomCount) {
-                                                                                                    echo "";
-                                                                                                } else {
-                                                                                                    echo "modal";
-                                                                                                } ?>" data-target="#<?php $modalName = str_replace(" ", "-", $mainHotels["name"]);
-                                                                                                                                                                                            echo str_replace("&", "s", $modalName); ?>"><?php if (count($price) == 0) {
-                                                                                                                                                                echo "Not Available";
-                                                                                                                                                            }
-
-                                                                                                                                                            foreach ($rate as $mainRatee) {
-                                                                                                                                                                if ($startDate < $mainRatee["start"]) {
-                                                                                                                                                                    continue;
-                                                                                                                                                                } elseif ($startDate > $mainRatee["end"]) {
-                                                                                                                                                                    continue;
-                                                                                                                                                                } elseif ($mainRatee["price"] != $lowPrice) {
-                                                                                                                                                                    continue;
+                                            <button class="btn <?php if($rooms > $availableRoomsbutton){echo "d-none";} ?> <?php if (count($price) == 0 || $mainRate["rooms"] <= $roomCount) {
+                                                                    echo "btn-danger mt-5";
+                                                                } else {
+                                                                    echo "btn-success";
+                                                                } ?>  btn-block lato" data-toggle="<?php if ($mainRate["rooms"] <= $roomCount) {
+                                                                                                        echo "";
+                                                                                                    } else {
+                                                                                                        echo "modal";
+                                                                                                    } ?>" data-target="#<?php $modalName = str_replace(" ", "-", $mainHotels["name"]);
+                                                                                                                    echo str_replace("&", "s", $modalName); ?>"><?php if (count($price) == 0) {
+                                                                                                                                                                    echo "Not Available";
                                                                                                                                                                 }
-                                                                                                                                                                if ($mainRatee["rooms"] <= $roomCount) {
-                                                                                                                                                                    echo "Sold Out";
-                                                                                                                                                                } else {
-                                                                                                                                                                    echo "Book Now";
-                                                                                                                                                                }
-                                                                                                                                                            }
-                                                                                                                                                            ?>
-                                        </button>
-                                        <div class="<?php if (count($price) == 0 || count($price) == 1 || $mainRate["rooms"] <= $roomCount) {
-                                                        echo "d-none";
-                                                    } ?> more-rates lato text-right mt-1 pointer" data-toggle="modal" data-target="#<?php $modalName = str_replace(" ", "-", $mainHotels["name"]);
-                                                                                                                                    echo str_replace("&", "s", $modalName); ?>"><span class="fa fa-arrow-circle-right mr-2"></span><span>Show more rates</span></div>
-                                        <?php
-                                        $availableRoomsbutton = $mainRate["rooms"] - $roomCount;
-                                        if ($rooms > $availableRoomsbutton) {
 
-                                        ?>
-                                            <div class="alert alert-danger" role="alert">
-                                                We Cannot number of accomodate rooms required by you!
-                                            </div>
-                                        <?php
-                                        }
-                                        ?>
+                                                                                                                                                                foreach ($rate as $mainRatee) {
+                                                                                                                                                                    if ($startDate < $mainRatee["start"]) {
+                                                                                                                                                                        continue;
+                                                                                                                                                                    } elseif ($startDate > $mainRatee["end"]) {
+                                                                                                                                                                        continue;
+                                                                                                                                                                    } elseif ($mainRatee["price"] != $lowPrice) {
+                                                                                                                                                                        continue;
+                                                                                                                                                                    }
+                                                                                                                                                                    if ($mainRatee["rooms"] <= $roomCount) {
+                                                                                                                                                                        echo "Sold Out";
+                                                                                                                                                                    } else {
+                                                                                                                                                                        echo "Book Now";
+                                                                                                                                                                    }
+                                                                                                                                                                }
+                                                                                                                                                                ?>
+                                            </button>
+                                            <div class="<?php if (count($price) == 0 || count($price) == 1 || $mainRate["rooms"] <= $roomCount) {
+                                                            echo "d-none";
+                                                        } ?> more-rates lato text-right mt-1 pointer" data-toggle="modal" data-target="#<?php $modalName = str_replace(" ", "-", $mainHotels["name"]);
+                                                                                                                                        echo str_replace("&", "s", $modalName); ?>"><span class="fa fa-arrow-circle-right mr-2"></span><span>Show more rates</span></div>
+                                            <?php
+                                            if ($rooms > $availableRoomsbutton) {
+
+                                            ?>
+                                                <div class="alert alert-danger" role="alert">
+                                                    We Cannot accomodate number of rooms required by you!
+                                                    <?php echo "<br>". $availableRoomsbutton . " rooms are available!";?>
+                                                </div>
+                                            <?php
+                                            
+                                            }
+                                            ?>
                                     <?php
+
                                     }
+                                    if($skipCount == $priceLoopCount){
+                                        echo '<div class="alert alert-warning mt-5  " role="alert">
+                                        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                                        Not Available</div>';
+                                    }
+                                    
                                     ?>
 
                                     <div class="modal fade" id="<?php $modalName = str_replace(" ", "-", $mainHotels["name"]);
@@ -329,7 +351,7 @@ foreach ($bookingData as $delBooking) {
                                                     foreach (array_combine($price, $accom) as $key => $val) {
                                                     ?>
                                                         <div class="border bg-primary">
-                                                            <div class="lato font-20 p-1"><span class="font-15 text-white"><?php echo $val ?></span> <a href="confirmation.php?stay=<?php echo $stayNights . "&hotel_id=" . $mainHotels["id"] . "&startDate=" . $startDate . "&endDate=" . $endDate . "&children=" . $children . "&adults=" . $adults . "&rooms=" . $rooms . "&price=" . $key . "&accomodation=" . $val . "&pickup=" . $pickup . "&room_no=" . $rateId[$rate_index]; ?>" class="p-2 btn btn-success mt-1 float-right ml-5">Book Now</a><span class="float-right mr-5 lato text-white font-weight-bold"><?php echo $key . "$" ?></span></div>
+                                                            <div class="lato font-20 p-1"><span class="font-15 text-white"><?php echo $val ?></span> <a href="confirmation.php?stay=<?php echo $stayNights . "&hotel_id=" . $mainHotels["id"] . "&season=" . $seasonId . "&startDate=" . $startDate . "&endDate=" . $endDate . "&children=" . $children . "&adults=" . $adults . "&rooms=" . $rooms . "&price=" . $key . "&accomodation=" . $val . "&pickup=" . $pickup . "&room_no=" . $rateId[$rate_index]; ?>" class="p-2 btn btn-success mt-1 float-right ml-5">Book Now</a><span class="float-right mr-5 lato text-white font-weight-bold"><?php echo $key . "$" ?></span></div>
                                                             <div class="lato font-15 text-white pl-1"><?php echo $mainHotels["parking"] ?></div>
                                                         </div>
                                                     <?php

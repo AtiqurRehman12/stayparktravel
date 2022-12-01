@@ -1,6 +1,6 @@
 <?php
 require_once './inc/sqlfunctions.php';
-$bookingSql = "SELECT guests.first_name, guests.last_name , guests.email, guests.number, guests.address, guests.zip , guests.check_in, guests.check_out, guests.vehical_pickup, guests.room_type, guests.dues, guests.stay_nights, guests.room_num, guests.rooms, guests.adults, guests.children ,payment.card_number, payment.name_on_card, payment.payment_time
+$bookingSql = "SELECT guests.id as gid, guests.first_name, guests.last_name , guests.email, guests.number, guests.address, guests.zip , guests.check_in, guests.check_out, guests.vehical_pickup, guests.room_type, guests.dues, guests.stay_nights, guests.room_num, guests.rooms, guests.adults, guests.children ,payment.card_number, payment.name_on_card, payment.payment_time
 FROM guests
 INNER JOIN payment ON guests.id = payment.guest_id";
 $bookingRes = mysqli_query($connection, $bookingSql);
@@ -77,11 +77,13 @@ if(mysqli_num_rows($bookingRes)>0){
                             <th scope="col">Name on Card</th>
                             <th scope="col">Card Number</th>
                             <th scope="col">Payment Time</th>
+                            <th scope="col">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
                         $i = 1;
+                        if(!empty($bookingData)){
                         foreach($bookingData as $mainBookingData){
 
                         ?>
@@ -103,16 +105,20 @@ if(mysqli_num_rows($bookingRes)>0){
                             <td><?php echo $mainBookingData["name_on_card"]?></td>
                             <td><?php echo $mainBookingData["card_number"]?></td>
                             <td><?php echo $mainBookingData["payment_time"]?></td>
+                            <td><a href="adminDelReservation.php?id=<?php echo $mainBookingData["gid"] ?>"><span class="fa fa-trash" ></span></a></td>
                         </tr>
                         <?php
                         $i++;
                         }
+                    }else{
+                        echo "<strong>No Bookings Made Yet!</strong>";
+                    }
                         ?>
                     </tbody>
                 </table>
             </div>
             <div class="col-11 mx-auto mt-2">
-                <a href="addFeature.php" class="btn btn-primary">Go back</a>
+                <a href="hotelAdmin.php" class="btn btn-primary">Go back</a>
             </div>
             <!-- /.content -->
         </div>
