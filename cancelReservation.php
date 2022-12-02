@@ -1,4 +1,5 @@
 <?php 
+session_start();
 require_once './admin/inc/sqlfunctions.php';
 if(isset($_GET["id"]) && isset($_GET["hotel"])){
     $id = $_GET["id"];
@@ -8,6 +9,7 @@ if(isset($_GET["id"]) && isset($_GET["hotel"])){
     $number = $reservation["number"];
     $address = $reservation["address"];
     $dues = $reservation["dues"];
+    $email = $_SESSION["email"];
     echo $hotel;
     $cancel_arr = array(
         "name" => $name,
@@ -20,6 +22,13 @@ if(isset($_GET["id"]) && isset($_GET["hotel"])){
 
     delete_func("guests", $id, $connection);
     delete_where_fun("payment", "guest_id", $id, $connection);
+    $message = "Your reservation at ". $hotel . " has been Cancelled.";
+    $notification_arr = array(
+        "message" => $message,
+        "user_mail" => $email,
+        "status" => 1,
+    );
+    insert_func("notifications", $notification_arr, $connection);
     header("location:userAccount.php");
 }
 ?>

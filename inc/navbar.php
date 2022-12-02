@@ -1,3 +1,8 @@
+<?php 
+$notificaitonSql = "SELECT * FROM notifications WHERE `status` = 1";
+$notificaitonRes = mysqli_query($connection, $notificaitonSql);
+$numOfNotifications = mysqli_num_rows($notificaitonRes);
+ ?>
 <section class="nav-top-border bg-white navbar-section pb-2">
     <div class="col-11 mx-auto">
         <nav class="navbar navbar-expand-lg navbar-light p-0">
@@ -23,7 +28,7 @@
                                         <a class="nav-link lato text-white p-1 font-13" href="<?php if(!isset($_SESSION["loggedIn"])){echo "#exampleModal";}else{echo "userAccount.php";}?>" data-toggle="<?php if(!isset($_SESSION["loggedIn"])){echo "modal";} ?>"><span class="fa fa-briefcase text-white mr-2"></span>View Reservations</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link lato text-white p-1 font-13" href="#"><span class="fa fa-clock-o text-white mr-2"></span>Hours</a>
+                                        <a class="nav-link lato text-white p-1 font-13" href="<?php if(isset($_SESSION["loggedIn"])){echo "notifications.php";}else{echo "#";} ?>"><span class="fa fa-clock-o text-white mr-2"></span><?php if(isset($_SESSION["loggedIn"])){echo "Notifications"; if($numOfNotifications>0){echo "<span class='badge badge-danger ml-1'>". $numOfNotifications. "</span>";} }else{echo "Hours";} ?></a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link lato text-white p-1 font-13" href="#"><span class="fa fa-phone text-white mr-2"></span>Request Call Back</a>

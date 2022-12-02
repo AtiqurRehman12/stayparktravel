@@ -15,7 +15,7 @@ $season = $_GET["season"];
 $accomodation = $_GET["accomodation"];
 $room_num = $_GET["room_no"];
 
-if(isset($_POST["submit"])){
+if (isset($_POST["submit"])) {
     $expiryDate = $_POST["month"] . "/" . $_POST["year"];
     $guest_arr = array(
         "first_name" => $_POST["firstname"],
@@ -37,7 +37,7 @@ if(isset($_POST["submit"])){
         "season" => $season,
         "hotel_id" => $hotel["id"],
     );
-    insert_func("guests" , $guest_arr, $connection);
+    insert_func("guests", $guest_arr, $connection);
     $guest_id = mysqli_insert_id($connection);
     $payment = array(
         "card_number" => $_POST["cardno"],
@@ -47,6 +47,19 @@ if(isset($_POST["submit"])){
         "guest_id" => $guest_id,
     );
     insert_func("payment", $payment, $connection);
+    $hotelDetail = select_where("hotels", "id", $hotel_id, $connection, 1);
+    $hotelName = $hotelDetail["name"];
+    $message = $_POST["firstname"] . " " . $_POST["lastname"] . ", You have booked " . $rooms . " in " . $hotelName . " at " . date("d, M-Y");
+    $notification_arr = array(
+        "message" => $message,
+        "user_mail" => $_POST["email"],
+        "status" => 1,
+    );
+    insert_func("notifications", $notification_arr, $connection);
+    // the message
+    $msg = "First line of text\nSecond line of text";
+    $gmail = $_POST["email"];
+    mail($gmail, "My subject", $msg);
 }
 ?>
 <!DOCTYPE html>
@@ -298,33 +311,33 @@ if(isset($_POST["submit"])){
     </div>
     <?php require_once './inc/footer.php' ?>
     <script>
-        $(document).ready(function(){
+        $(document).ready(function() {
             $("form").validate({
                 rules: {
-                    "firstname" : "required",
-                    "lastname" : "required",
-                    "email" : "required",
-                    "number" : "required",
-                    "cardname" : "required",
-                    "cardno" : "required",
-                    "cvc" : "required",
-                    "year" : "required",
-                    "month" : "required",
-                    "address" : "required",
-                    "zip" : "required",
+                    "firstname": "required",
+                    "lastname": "required",
+                    "email": "required",
+                    "number": "required",
+                    "cardname": "required",
+                    "cardno": "required",
+                    "cvc": "required",
+                    "year": "required",
+                    "month": "required",
+                    "address": "required",
+                    "zip": "required",
                 },
                 message: {
-                    "firstname" : "Field is required",
-                    "lastname" : "Field is required",
-                    "email" : "Field is required",
-                    "number" : "Field is required",
-                    "cardname" : "Field is required",
-                    "cardno" : "Field is required",
-                    "cvc" : "Field is required",
-                    "year" : "Field is required",
-                    "month" : "Field is required",
-                    "address" : "Field is required",
-                    "zip" : "Field is required",
+                    "firstname": "Field is required",
+                    "lastname": "Field is required",
+                    "email": "Field is required",
+                    "number": "Field is required",
+                    "cardname": "Field is required",
+                    "cardno": "Field is required",
+                    "cvc": "Field is required",
+                    "year": "Field is required",
+                    "month": "Field is required",
+                    "address": "Field is required",
+                    "zip": "Field is required",
                 }
             })
         })
